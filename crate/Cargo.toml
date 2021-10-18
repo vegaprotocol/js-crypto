@@ -1,0 +1,18 @@
+[package]
+name = "bindgen-test"
+version = "0.1.0"
+authors = ["Emil Bay <github@tixz.dk>"]
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[profile.release]
+lto = true
+opt-level = 'z'
+
+[dependencies]
+wee_alloc = "0.4.5"
+wasm-bindgen = "0.2.74"
+ed25519-compact = { version = "0.1", default-features = false }
+tiny-keccak = { version = "2.0", features = ["keccak"] }
