@@ -9,20 +9,20 @@ where loading WASM is sync, or where crypto routines are sync, but everything
 is kept async as a lowest common denominator between browser APIs and future
 hardware wallet support.
 
-`const wallet = await Wallet.fromMnemonic(mnemonic)`
+### `const wallet = await Wallet.fromMnemonic(mnemonic)`
 
 Generate a new `Wallet` from a BIP-0032 mnemonic. Note that the mnemonic
 is not validated before key derivation.
 
-`const kp = await wallet.keyPair(index)`
+### `const kp = await wallet.keyPair(index)`
 
 Generate a new key pair at `index`, under the Vega specific subtree.
 
-`const sig = await kp.sign(msg)`
+### `const sig = await kp.sign(msg)`
 
 Sign `msg` with key pair `kp`.
 
-`const isValid = await kp.verify(sig, msg)`
+### `const isValid = await kp.verify(sig, msg)`
 
 Verify `sig` is valid for `msg` under key pair `kp`.
 
