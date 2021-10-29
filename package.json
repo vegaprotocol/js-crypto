@@ -1,10 +1,16 @@
 {
   "name": "@vegaprotocol/crypto",
   "version": "0.0.0",
-  "description": "Javascript compatible implementation of crypto primitives used by Vega ",
+  "description": "Crypto operations for Vega supporting Node.js and Browsers",
   "main": "index.js",
+  "type": "module",
   "scripts": {
+    "bundle": "rollup -c",
+    "watch": "rollup -c -w",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "browser": {
+    "./dist/crypto.mjs": "./dist/browser-crypto.mjs"
   },
   "repository": {
     "type": "git",
@@ -15,5 +21,14 @@
   "bugs": {
     "url": "https://github.com/vegaprotocol/js-crypto/issues"
   },
-  "homepage": "https://github.com/vegaprotocol/js-crypto#readme"
+  "homepage": "https://github.com/vegaprotocol/js-crypto#readme",
+  "devDependencies": {
+    "@rollup/plugin-node-resolve": "^13.0.6",
+    "@wasm-tool/rollup-plugin-rust": "^1.0.7",
+    "rollup": "^2.58.3",
+    "standard": "^16.0.4"
+  },
+  "dependencies": {
+    "nanoassert": "^2.0.0"
+  }
 }

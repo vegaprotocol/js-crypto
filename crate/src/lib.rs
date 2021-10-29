@@ -1,5 +1,5 @@
 pub use ed25519_compact::*;
-use tiny_keccak::{Hasher, Keccak};
+use tiny_keccak::{Hasher, Sha3};
 use wasm_bindgen::prelude::*;
 
 extern crate wee_alloc;
@@ -39,9 +39,9 @@ pub fn verify(signature: &[u8], message: &[u8], public_key: &[u8]) -> bool {
 }
 
 fn _hash(message: &[u8]) -> [u8; 32] {
-    let mut keccak = Keccak::v256();
+    let mut sha3 = Sha3::v256();
     let mut digest = [0u8; 32];
-    keccak.update(message);
-    keccak.finalize(&mut digest);
+    sha3.update(message);
+    sha3.finalize(&mut digest);
     digest
 }
