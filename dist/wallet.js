@@ -1,25 +1,21 @@
-import { KeyPair } from './keypair.js';
-import wallet from './hd.js';
-import './buf-ba61d454.js';
+import { Wallet, HARDENED } from './hd-wallet.js';
+export { HARDENED } from './hd-wallet.js';
+import './index-a447e129.js';
+import './bip-0039.js';
 import './crypto.js';
 import 'crypto';
+import './buf-ba61d454.js';
+import './slip-0010.js';
+import './keypair.js';
 
-class Wallet {
-  constructor (hd) {
-    this._hd = hd;
-  }
-
-  async keyPair (index) {
-    const seed = await this._hd(index);
-
-    return KeyPair.fromSeed(index, seed)
-  }
-
+class VegaWallet extends Wallet {
   static async fromMnemonic (mnemonic) {
-    const _hd = await wallet(mnemonic);
+    const master = await super.fromMnemonic(mnemonic);
+    const vega = await master.child(HARDENED + 1789);
+    const defaultUsage = await vega.child(HARDENED + 0);
 
-    return new this(_hd)
+    return defaultUsage
   }
 }
 
-export { Wallet };
+export { VegaWallet };
