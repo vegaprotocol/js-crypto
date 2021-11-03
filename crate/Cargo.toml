@@ -1,5 +1,5 @@
 [package]
-name = "bindgen-test"
+name = "vega-crypto"
 version = "0.1.0"
 authors = ["Emil Bay <github@tixz.dk>"]
 edition = "2018"

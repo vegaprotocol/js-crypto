@@ -1,6 +1,13 @@
+import { n as nanoassert } from './index-a447e129.js';
+
 const scrypto = window.crypto.subtle;
 
-async function pbkdf2Sha512 (password, salt, iterations, bytes, hash) {
+async function pbkdf2Sha512 (password, salt, iterations, bytes) {
+  nanoassert(password instanceof Uint8Array);
+  nanoassert(salt instanceof Uint8Array);
+  nanoassert(iterations > 0 && iterations <= 2 ** 53);
+  nanoassert(bytes > 0 && bytes <= 64);
+
   const _password = await scrypto.importKey(
     'raw',
     password,
@@ -26,6 +33,9 @@ async function pbkdf2Sha512 (password, salt, iterations, bytes, hash) {
 }
 
 async function hmacSha512 (key, data) {
+  nanoassert(key instanceof Uint8Array);
+  nanoassert(data instanceof Uint8Array);
+
   const _key = await scrypto.importKey(
     'raw',
     key,
