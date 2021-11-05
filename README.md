@@ -2,6 +2,31 @@
 
 > Crypto operations for Vega supporting Node.js and Browsers
 
+## Usage
+
+This module supports both CommonJS and ES Modules:
+
+```js
+const { VegaWallet, HARDENED } = require('@vegaprotocol/crypto')
+
+VegaWallet.fromMnemonic('...').then(async wallet => {
+  const keys = await wallet.keyPair(HARDENED + 0)
+
+  const msg = Buffer.from('Hello world!')
+  const signature = keys.sign(msg)
+})
+```
+
+```js
+import { VegaWallet, HARDENED } from '@vegaprotocol/crypto'
+
+const wallet = await VegaWallet.fromMnemonic('...')
+const keys = await wallet.keyPair(HARDENED + 0)
+
+const msg = Buffer.from('Hello world!')
+const signature = keys.sign(msg)
+```
+
 ## API
 
 Note: All APIs are async. In some cases they will run sync, eg in Node.js
@@ -26,7 +51,7 @@ Sign `msg` with key pair `kp`.
 
 Verify `sig` is valid for `msg` under key pair `kp`.
 
-### Spec
+## Spec
 
 BIP-0032 based mnemonic with SLIP-0010 derivation of Ed25519 keys.
 
@@ -102,9 +127,9 @@ fun Verify (Signature, Message, PublicKey) -> {T, F}
 
 ```
 
-### Test Vectors
+## Test Vectors
 
-#### Vector 1
+### Vector 1
 
 Mnemonic: swing ceiling chaos green put insane ripple desk match tip melt usual shrug turkey renew icon parade veteran lens govern path rough page render
 
