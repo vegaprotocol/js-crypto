@@ -1,10 +1,14 @@
-import { n as nanoassert } from './index-a447e129.js';
-import { pbkdf2Sha512 } from './crypto.js';
-import { s as string, c as concat } from './buf-ba61d454.js';
-import 'crypto';
+'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
+
+var index = require('./index-36930ebb.js');
+var crypto = require('./crypto.js');
+var buf = require('./buf.js');
+require('crypto');
 
 /** @type {Uint8Array} BIP-0039 defined salt prefix */
-const BIP39_SALT_PREFIX = string('mnemonic');
+const BIP39_SALT_PREFIX = buf.string('mnemonic');
 
 /** @type {number} BIP-0039 defined iterations for PBKDF2-SHA-512 */
 const BIP39_ITERATIONS = 2048;
@@ -14,18 +18,19 @@ const BIP39_KEYBYTES = 64;
 /**
  * Derive a new seed from a BIP-0039 mnemonic. Note that no validation is
  * performed.
+ * @async
  * @param  {string | Uint8Array} mnemonic - Space delimited mnemonic
  * @param  {string | Uint8Array} [password=""] - Optional password
  * @return {Promise<Uint8Array>} - 64-byte seed
  */
 async function seed (mnemonic, password = '') {
-  nanoassert(mnemonic instanceof Uint8Array || typeof mnemonic === 'string');
-  nanoassert(password instanceof Uint8Array || typeof password === 'string');
+  index.nanoassert(mnemonic instanceof Uint8Array || typeof mnemonic === 'string');
+  index.nanoassert(password instanceof Uint8Array || typeof password === 'string');
 
-  const _password = string(mnemonic);
-  const salt = concat(BIP39_SALT_PREFIX, string(password));
+  const _password = buf.string(mnemonic);
+  const salt = buf.concat(BIP39_SALT_PREFIX, buf.string(password));
 
-  return pbkdf2Sha512(
+  return crypto.pbkdf2Sha512(
     _password,
     salt,
     BIP39_ITERATIONS,
@@ -33,4 +38,4 @@ async function seed (mnemonic, password = '') {
   )
 }
 
-export { seed };
+exports.seed = seed;

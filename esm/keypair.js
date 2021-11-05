@@ -1,5 +1,5 @@
 import { n as nanoassert } from './index-a447e129.js';
-import { h as hex } from './buf-ba61d454.js';
+import { hex } from './buf.js';
 
 let wasm$1;
 
@@ -298,7 +298,7 @@ class KeyPair {
    * @return {Promise<boolean>}
    */
   verify (signature, message) {
-    return this.pk.sign(signature, message)
+    return this.pk.verify(signature, message)
   }
 
   /**

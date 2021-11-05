@@ -4,17 +4,24 @@ import commonjs from '@rollup/plugin-commonjs'
 
 export default {
   input: [
-    'lib/crypto.mjs',
-    'lib/browser-crypto.mjs',
-    'lib/bip-0039.mjs',
-    'lib/slip-0010.mjs',
-    'lib/keypair.mjs',
-    'lib/hd-wallet.mjs',
-    'lib/wallet.mjs'
+    'lib/buf.js',
+    'lib/crypto.js',
+    'lib/browser-crypto.js',
+    'lib/bip-0039.js',
+    'lib/slip-0010.js',
+    'lib/keypair.js',
+    'lib/hd-wallet.js',
+    'lib/wallet.js'
   ],
-  output: {
-    dir: 'dist',
-    format: 'es'
-  },
+  output: [
+    {
+      dir: 'esm',
+      format: 'es'
+    },
+    {
+      dir: 'cjs',
+      format: 'cjs'
+    }
+  ],
   plugins: [commonjs(), nodeResolve(), rust({ inlineWasm: true })]
 }

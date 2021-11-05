@@ -1,6 +1,6 @@
 import { n as nanoassert } from './index-a447e129.js';
 import { hmacSha512 } from './crypto.js';
-import { s as string, c as concat, u as u32be, a as u8 } from './buf-ba61d454.js';
+import { string, concat, u32be, u8 } from './buf.js';
 import 'crypto';
 
 /**
@@ -23,6 +23,8 @@ const CURVE_ED25519 = 'ed25519 seed';
 
 /**
  * Master key derivation
+ *
+ * @async
  * @param  {Uint8Array} seed
  * @param  {string} curve
  * @return {Promise<{ secretKey: Uint8Array, chainCode: Uint8Array }>}
@@ -30,7 +32,6 @@ const CURVE_ED25519 = 'ed25519 seed';
 async function master (seed, curve) {
   nanoassert(curve === CURVE_ED25519, 'Only Ed25519 is supported for now');
   nanoassert(seed instanceof Uint8Array);
-  nanoassert(seed.byteLength === 64);
 
   const key = string(curve);
   const data = seed;
@@ -51,6 +52,8 @@ const HARDENED_OFFSET = 0x8000_0000;
 
 /**
  * Child key derivation
+ *
+ * @async
  * @param  {Uint8Array} parentSecretKey
  * @param  {Uint8Array} parentChainCode
  * @param  {number} index
