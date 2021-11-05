@@ -2,15 +2,29 @@
   "name": "@vegaprotocol/crypto",
   "version": "0.0.0",
   "description": "Crypto operations for Vega supporting Node.js and Browsers",
-  "main": "index.js",
   "type": "module",
   "scripts": {
     "bundle": "rollup -c",
     "watch": "rollup -c -w",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "tape 'test/**/*.js'"
   },
   "browser": {
-    "./dist/crypto.mjs": "./dist/browser-crypto.mjs"
+    "./cjs/crypto.js": "./cjs/browser-crypto.js",
+    "./esm/crypto.js": "./esm/browser-crypto.js"
+  },
+  "exports": {
+    ".": {
+      "import": "./esm/wallet.js",
+      "require": "./cjs/wallet.js"
+    },
+    "./*": {
+      "import": "./esm/*.js",
+      "require": "./cjs/*.js"
+    },
+    "./*.js": {
+      "import": "./esm/*.js",
+      "require": "./cjs/*.js"
+    }
   },
   "repository": {
     "type": "git",
@@ -27,7 +41,9 @@
     "@rollup/plugin-node-resolve": "^13.0.6",
     "@wasm-tool/rollup-plugin-rust": "^1.0.7",
     "rollup": "^2.58.3",
-    "standard": "^16.0.4"
+    "standard": "^16.0.4",
+    "tape": "^5.3.1",
+    "typescript": "^4.4.4"
   },
   "dependencies": {
     "nanoassert": "^2.0.0"

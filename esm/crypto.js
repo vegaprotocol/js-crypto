@@ -1,7 +1,14 @@
 import { n as nanoassert } from './index-a447e129.js';
 import * as crypto from 'crypto';
 
-// This is implicitly async now
+/**
+ * @async
+ * @param  {Uint8Array} password
+ * @param  {Uint8Array} salt
+ * @param  {number} iterations
+ * @param  {number} bytes
+ * @return {Promise<Uint8Array>}
+ */
 function pbkdf2Sha512 (password, salt, iterations, bytes) {
   nanoassert(password instanceof Uint8Array);
   nanoassert(salt instanceof Uint8Array);
@@ -23,7 +30,13 @@ function pbkdf2Sha512 (password, salt, iterations, bytes) {
   })
 }
 
-// This one is async to keep the same API as the browser SubtleCrypto
+/**
+ * This function is async to keep the same API as SubtleCrypto
+ * @async
+ * @param  {Uint8Array} key
+ * @param  {Uint8Array} data
+ * @return {Promise<Uint8Array>}
+ */
 async function hmacSha512 (key, data) {
   nanoassert(key instanceof Uint8Array);
   nanoassert(data instanceof Uint8Array);

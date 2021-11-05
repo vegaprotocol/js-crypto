@@ -4,7 +4,7 @@ import { CURVE_ED25519 as CURVE_ED25519$1, HARDENED_OFFSET, child, master } from
 import { KeyPair } from './keypair.js';
 import './crypto.js';
 import 'crypto';
-import './buf-ba61d454.js';
+import './buf.js';
 
 // Private accessors
 const kChainCode = Symbol('ChainCode');
@@ -42,6 +42,7 @@ class Wallet {
   /**
    * Derive a new sub-wallet from the current wallet. Index ≥ 2^31 creates a
    * hardended child node.
+   * @async
    * @param  {number} index
    * @return {Promise<Wallet>}
    */
@@ -51,6 +52,11 @@ class Wallet {
     return new Wallet(secretKey, chainCode)
   }
 
+  /**
+   * @async
+   * @param  {number} index
+   * @return {Promise<KeyPair>}
+   */
   async keyPair (index) {
     const { secretKey } = await child(this[kSecretKey], this[kChainCode], index);
 
@@ -61,9 +67,10 @@ class Wallet {
    * Create a new BIP-0039 derived wallet. Note that the mnemonic is not
    * validated.
    *
+   * @async
    * @param  {string | Uint8Array} mnemonic - BIP-0039 space delimited mnemonic
    * @param  {string | Uint8Array} [password=""] - Optional password
-   * @param  {string | Uint8Array} [curve=CURVE_ED25519] - Elliptic Curve
+   * @param  {string} [curve=CURVE_ED25519] - Elliptic Curve
    * @return {Promise<Wallet>}
    */
   static async fromMnemonic (mnemonic, password = '', curve = CURVE_ED25519) {
@@ -77,15 +84,15 @@ class Wallet {
   }
 
   /**
-   * Create a new wallet from a 64-byte seed.
+   * Create a new wallet from a seed.
    *
-   * @param  {Uint8Array} seed - 64 bytes
-   * @param  {string | Uint8Array} [curve=CURVE_ED25519] - Elliptic Curve
+   * @async
+   * @param  {Uint8Array} seed
+   * @param  {string} [curve=CURVE_ED25519] - Elliptic Curve
    * @return {Promise<Wallet>}
    */
   static async fromSeed (seed, curve = CURVE_ED25519) {
     nanoassert(seed instanceof Uint8Array);
-    nanoassert(seed.byteLength === 64);
     nanoassert(curve === CURVE_ED25519, 'Only Ed25519 is supported for now');
 
     const { secretKey, chainCode } = await master(seed, curve);
