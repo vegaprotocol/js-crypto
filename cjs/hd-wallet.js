@@ -21,7 +21,7 @@ const kSecretKey = Symbol('SecretKey');
 const CURVE_ED25519 = slip0010.CURVE_ED25519;
 
 /**
- * Hardended child node offset. Use with `.child(index + HARDENED)` or
+ * Hardened child node offset. Use with `.child(index + HARDENED)` or
  * `.keyPair(index + HARDENED)`
  * @type {number}
  */
