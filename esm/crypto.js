@@ -1,5 +1,5 @@
 import { n as nanoassert } from './index-a447e129.js';
-import * as crypto from 'crypto';
+import { pbkdf2, createHmac } from 'crypto';
 
 /**
  * @async
@@ -16,7 +16,7 @@ function pbkdf2Sha512 (password, salt, iterations, bytes) {
   nanoassert(bytes > 0 && bytes <= 64);
 
   return new Promise((resolve, reject) => {
-    crypto.pbkdf2(
+    pbkdf2(
       password,
       salt,
       iterations,
@@ -41,7 +41,7 @@ async function hmacSha512 (key, data) {
   nanoassert(key instanceof Uint8Array);
   nanoassert(data instanceof Uint8Array);
 
-  return crypto.createHmac('sha512', key)
+  return createHmac('sha512', key)
     .update(data)
     .digest()
 }

@@ -45,7 +45,7 @@ class Wallet {
 
   /**
    * Derive a new sub-wallet from the current wallet. Index ≥ 2^31 creates a
-   * hardended child node.
+   * hardened child node.
    * @async
    * @param  {number} index
    * @return {Promise<Wallet>}
