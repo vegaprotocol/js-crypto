@@ -8,14 +8,17 @@ import 'crypto';
 import './buf.js';
 import './slip-0010.js';
 
+const SLIP44_VEGA_COINTYPE = 1789;
+const VEGA_DEFAULT_KEYSPACE = 0;
+
 class VegaWallet extends Wallet {
   static async fromMnemonic (mnemonic) {
     const master = await super.fromMnemonic(mnemonic);
-    const vega = await master.child(HARDENED + 1789);
-    const defaultUsage = await vega.child(HARDENED + 0);
+    const vega = await master.child(HARDENED + SLIP44_VEGA_COINTYPE);
+    const defaultUsage = await vega.child(HARDENED + VEGA_DEFAULT_KEYSPACE);
 
     return defaultUsage
   }
 }
 
-export { VegaWallet };
+export { SLIP44_VEGA_COINTYPE, VEGA_DEFAULT_KEYSPACE, VegaWallet };
