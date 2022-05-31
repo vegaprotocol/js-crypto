@@ -1,5 +1,7 @@
 # `@vegaprotocol/crypto`
 
+> ⚠️ Under active development ⚠️
+
 > Crypto operations for Vega supporting Node.js and Browsers
 
 ## Usage
@@ -91,7 +93,7 @@ fun HDWallet (Mnemonic) -> Derive
 
   // Vega magic
   VEGA = 1789
-  // Path: "m/'MAGIC"
+  // Path: "m/'VEGA"
   VegaChainCode, VegaKey = HardenedChildNode(MasterChainCode, MasterKey, VEGA)
 
   // Default sub node
