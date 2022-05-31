@@ -15,7 +15,7 @@ VegaWallet.fromMnemonic('...').then(async wallet => {
   const keys = await wallet.keyPair(HARDENED + 0)
 
   const msg = Buffer.from('Hello world!')
-  const signature = keys.sign(msg)
+  const signature = await keys.sign(msg)
 })
 ```
 
@@ -26,7 +26,7 @@ const wallet = await VegaWallet.fromMnemonic('...')
 const keys = await wallet.keyPair(HARDENED + 0)
 
 const msg = Buffer.from('Hello world!')
-const signature = keys.sign(msg)
+const signature = await keys.sign(msg)
 ```
 
 ## API
