@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "description": "Crypto operations for Vega supporting Node.js and Browsers",
   "type": "module",
+  "main": "./lib/vega-wallet.js",
   "scripts": {
     "bundle": "rollup -c",
     "watch": "rollup -c -w",
@@ -10,22 +11,12 @@
     "test": "tape 'test/**/*.js'"
   },
   "browser": {
-    "./cjs/crypto.js": "./cjs/browser-crypto.js",
-    "./esm/crypto.js": "./esm/browser-crypto.js"
+    "./lib/crypto.js": "./lib/browser-crypto.js"
   },
   "exports": {
-    ".": {
-      "import": "./esm/wallet.js",
-      "require": "./cjs/wallet.js"
-    },
-    "./*": {
-      "import": "./esm/*.js",
-      "require": "./cjs/*.js"
-    },
-    "./*.js": {
-      "import": "./esm/*.js",
-      "require": "./cjs/*.js"
-    }
+    ".": "./lib/vega-wallet.js",
+    "./*": "./lib/*.js",
+    "./*.js": "./lib/*.js"
   },
   "repository": {
     "type": "git",
