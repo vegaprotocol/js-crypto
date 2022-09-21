@@ -9,7 +9,7 @@ extern crate wee_alloc;
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 #[wasm_bindgen]
-pub fn keypair_from_seed(seed_bytes: &[u8]) -> Box<[u8]> {
+pub fn ed25519_keypair_from_seed(seed_bytes: &[u8]) -> Box<[u8]> {
     let seed = Seed::from_slice(seed_bytes).unwrap();
     let kp = KeyPair::from_seed(seed);
 
@@ -17,8 +17,7 @@ pub fn keypair_from_seed(seed_bytes: &[u8]) -> Box<[u8]> {
 }
 
 #[wasm_bindgen]
-pub fn sign(message: &[u8], secret_key: &[u8]) -> Box<[u8]> {
-    let digest = _hash(message);
+pub fn ed25519_sign(digest: &[u8], secret_key: &[u8]) -> Box<[u8]> {
     let _secret_key = SecretKey::from_slice(secret_key).unwrap();
     let sig = _secret_key.sign(digest, Option::None);
 
@@ -26,9 +25,7 @@ pub fn sign(message: &[u8], secret_key: &[u8]) -> Box<[u8]> {
 }
 
 #[wasm_bindgen]
-pub fn verify(signature: &[u8], message: &[u8], public_key: &[u8]) -> bool {
-    let digest = _hash(message);
-
+pub fn ed25519_verify(signature: &[u8], digest: &[u8], public_key: &[u8]) -> bool {
     let _public_key = PublicKey::from_slice(public_key).unwrap();
     let _signature = Signature::from_slice(signature).unwrap();
 
@@ -39,7 +36,7 @@ pub fn verify(signature: &[u8], message: &[u8], public_key: &[u8]) -> bool {
 }
 
 #[wasm_bindgen]
-pub fn pow_hash(block_hash: &[u8], tid: &[u8], nonce: u64) -> Box<[u8]> {
+pub fn sha3r24_pow_hash(block_hash: &[u8], tid: &[u8], nonce: u64) -> Box<[u8]> {
     let mut sha3 = Sha3::v256();
     let mut digest = [0u8; 32];
     sha3.update(b"Vega_SPAM_PoW");
@@ -52,11 +49,11 @@ pub fn pow_hash(block_hash: &[u8], tid: &[u8], nonce: u64) -> Box<[u8]> {
 }
 
 #[wasm_bindgen]
-pub fn pow_solve(difficulty: u32, block_hash: &[u8], tid: &[u8], start_nonce: u64) -> u64 {
+pub fn sha3r24_pow_solve(difficulty: u32, block_hash: &[u8], tid: &[u8], start_nonce: u64) -> u64 {
     let mut nonce: u64 = start_nonce;
 
     loop {
-        let digest = pow_hash(block_hash, tid, nonce);
+        let digest = sha3r24_pow_hash(block_hash, tid, nonce);
 
         let x = u64::from_be_bytes([
             digest[0], digest[1], digest[2], digest[3],
@@ -71,10 +68,12 @@ pub fn pow_solve(difficulty: u32, block_hash: &[u8], tid: &[u8], start_nonce: u6
     }
 }
 
-fn _hash(message: &[u8]) -> [u8; 32] {
+#[wasm_bindgen]
+pub fn sha3_256_hash(message: &[u8]) -> Box<[u8]> {
     let mut sha3 = Sha3::v256();
     let mut digest = [0u8; 32];
     sha3.update(message);
     sha3.finalize(&mut digest);
-    digest
+
+    return Box::new(digest);
 }
