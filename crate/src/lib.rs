@@ -2,12 +2,6 @@ pub use ed25519_compact::*;
 use tiny_keccak::{Hasher, Sha3};
 use wasm_bindgen::prelude::*;
 
-extern crate wee_alloc;
-
-// Use `wee_alloc` as the global allocator, to reduce the WASM binary size
-#[global_allocator]
-static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
-
 #[wasm_bindgen]
 pub fn ed25519_keypair_from_seed(seed_bytes: &[u8]) -> Box<[u8]> {
     let seed = Seed::from_slice(seed_bytes).unwrap();
@@ -56,8 +50,7 @@ pub fn sha3r24_pow_solve(difficulty: u32, block_hash: &[u8], tid: &[u8], start_n
         let digest = sha3r24_pow_hash(block_hash, tid, nonce);
 
         let x = u64::from_be_bytes([
-            digest[0], digest[1], digest[2], digest[3],
-            digest[4], digest[5], digest[6], digest[7]
+            digest[0], digest[1], digest[2], digest[3], digest[4], digest[5], digest[6], digest[7],
         ]);
 
         if x.leading_zeros() >= difficulty {
