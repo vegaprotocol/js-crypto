@@ -36,10 +36,20 @@ where loading WASM is sync, or where crypto routines are sync, but everything
 is kept async as a lowest common denominator between browser APIs and future
 hardware wallet support.
 
-### `const wallet = await Wallet.fromMnemonic(mnemonic)`
+### `const wallet = await VegaWallet.fromMnemonic(mnemonic)`
 
-Generate a new `Wallet` from a BIP-0032 mnemonic. Note that the mnemonic
-is not validated before key derivation.
+Derive a new SLIP-10 `VegaWallet` from a BIP-0039 mnemonic. Note that the
+mnemonic is not validated before key derivation.
+
+### `const seed = await VegaWallet.deriveSeed(mnemonic)`
+
+Derive a `seed` from a BIP-0039 mnemonic. In combination with
+`VegaWallet.fromSeed` this is equivalent to `VegaWallet.fromMnemonic`.
+Note that the mnemonic is not validated before key derivation.
+
+### `const wallet = await VegaWallet.fromSeed(seed)`
+
+Derive a new SLIP-10 `VegaWallet` from a `seed`.
 
 ### `const kp = await wallet.keyPair(index)`
 
