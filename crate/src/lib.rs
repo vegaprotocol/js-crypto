@@ -2,6 +2,15 @@ pub use ed25519_compact::*;
 use tiny_keccak::{Hasher, Sha3};
 use wasm_bindgen::prelude::*;
 
+#[cfg(target_arch = "wasm32")]
+use lol_alloc::{AssumeSingleThreaded, FreeListAllocator};
+
+// SAFETY: This application is single threaded, so using AssumeSingleThreaded is allowed.
+#[cfg(target_arch = "wasm32")]
+#[global_allocator]
+static ALLOCATOR: AssumeSingleThreaded<FreeListAllocator> =
+    unsafe { AssumeSingleThreaded::new(FreeListAllocator::new()) };
+
 #[wasm_bindgen]
 pub fn ed25519_keypair_from_seed(seed_bytes: &[u8]) -> Box<[u8]> {
     let seed = Seed::from_slice(seed_bytes).unwrap();
