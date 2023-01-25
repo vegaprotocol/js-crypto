@@ -1,6 +1,6 @@
 {
   "name": "@vegaprotocol/crypto",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Crypto operations for Vega supporting Node.js and Browsers",
   "type": "module",
   "main": "./lib/vega-wallet.js",
