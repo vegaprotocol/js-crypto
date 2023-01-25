@@ -1,5 +1,5 @@
 import test from 'tape'
-import * as bip0039words from '../lib/bip-0039-wordlist.js'
+import * as bip0039words from '../lib/bip-0039/mnemonic.js'
 
 test('entropy', async assert => {
   {

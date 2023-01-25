@@ -1,5 +1,5 @@
 import test from 'tape'
-import * as bip0039 from '@vegaprotocol/crypto/bip-0039.js'
+import * as bip0039 from '@vegaprotocol/crypto/bip-0039/seed.js'
 import { toHex as hex } from '@vegaprotocol/crypto/buf.js'
 
 const vectors = [
