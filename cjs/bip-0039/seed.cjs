@@ -1,11 +1,8 @@
 'use strict';
 
-Object.defineProperty(exports, '__esModule', { value: true });
-
-var index = require('./index-36930ebb.js');
-var crypto = require('./crypto.js');
-var buf = require('./buf.js');
-require('crypto');
+var assert = require('nanoassert');
+var crypto = require('../crypto.cjs');
+var buf = require('../buf.cjs');
 
 /** @type {Uint8Array} BIP-0039 defined salt prefix */
 const BIP39_SALT_PREFIX = buf.string('mnemonic');
@@ -24,8 +21,8 @@ const BIP39_KEYBYTES = 64;
  * @return {Promise<Uint8Array>} - 64-byte seed
  */
 async function seed (mnemonic, password = '') {
-  index.nanoassert(mnemonic instanceof Uint8Array || typeof mnemonic === 'string');
-  index.nanoassert(password instanceof Uint8Array || typeof password === 'string');
+  assert(mnemonic instanceof Uint8Array || typeof mnemonic === 'string');
+  assert(password instanceof Uint8Array || typeof password === 'string');
 
   const _password = buf.string(mnemonic);
   const salt = buf.concat(BIP39_SALT_PREFIX, buf.string(password));

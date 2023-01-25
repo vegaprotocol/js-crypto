@@ -1,18 +1,16 @@
 'use strict';
 
-Object.defineProperty(exports, '__esModule', { value: true });
-
-var index = require('./index-36930ebb.js');
-var crate = require('./crate.js');
-var buf = require('./buf.js');
+var assert = require('nanoassert');
+var crate = require('./crate.cjs');
+var buf = require('./buf.cjs');
 
 class PublicKey {
   /**
    * @param {Uint8Array} pk - 32-byte secret key
    */
   constructor (pk) {
-    index.nanoassert(pk instanceof Uint8Array);
-    index.nanoassert(pk.byteLength === 32);
+    assert(pk instanceof Uint8Array);
+    assert(pk.byteLength === 32);
 
     /** @private */
     this._pk = pk;
@@ -26,9 +24,9 @@ class PublicKey {
    * @return {Promise<boolean>}
    */
   async verify (signature, message) {
-    index.nanoassert(signature instanceof Uint8Array);
-    index.nanoassert(signature.byteLength === 64);
-    index.nanoassert(message instanceof Uint8Array);
+    assert(signature instanceof Uint8Array);
+    assert(signature.byteLength === 64);
+    assert(message instanceof Uint8Array);
     const digest = (await crate.wasm).sha3_256_hash(message);
     return (await crate.wasm).ed25519_verify(signature, digest, this._pk)
   }
@@ -54,8 +52,8 @@ class SecretKey {
    * @param {Uint8Array} sk - 64-byte secret key
    */
   constructor (sk) {
-    index.nanoassert(sk instanceof Uint8Array);
-    index.nanoassert(sk.byteLength === 64);
+    assert(sk instanceof Uint8Array);
+    assert(sk.byteLength === 64);
 
     /** @private */
     this._sk = sk;
@@ -68,7 +66,7 @@ class SecretKey {
    * @return {Promise<Uint8Array>}
    */
   async sign (message) {
-    index.nanoassert(message instanceof Uint8Array);
+    assert(message instanceof Uint8Array);
     const digest = (await crate.wasm).sha3_256_hash(message);
     return (await crate.wasm).ed25519_sign(digest, this._sk)
   }

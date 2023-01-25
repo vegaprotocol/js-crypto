@@ -1,10 +1,7 @@
 'use strict';
 
-Object.defineProperty(exports, '__esModule', { value: true });
-
-var index = require('./index-36930ebb.js');
-var crypto = require('./crypto.js');
-require('crypto');
+var assert = require('nanoassert');
+var crypto = require('../crypto.cjs');
 
 // Inlined implementation of BIP0039 for supply-chain security
 // Please be very careful when editing the algorithms below
@@ -52,7 +49,7 @@ async function generate(bits) {
  * @returns {Promise<string[]>}    List of mnemonic words. Normally joined into a single string delimited by spaces
  */
 async function toMnemonic (entropy) {
-  index.nanoassert([12, 15, 18, 21, 24].includes(entropy.byteLength * 8 / 11 | 0), 'entropy must be 128 - 256 bits and multiple of 32 bits and include a checksum');
+  assert([12, 15, 18, 21, 24].includes(entropy.byteLength * 8 / 11 | 0), 'entropy must be 128 - 256 bits and multiple of 32 bits and include a checksum');
 
   const mnemonic = new Array(entropy.byteLength * 8 / 11 | 0);
 
@@ -70,7 +67,7 @@ async function toMnemonic (entropy) {
  * @returns {Promise<Uint8Array>}           Entropy including checksum
  */
 async function entropy (bits = 256) {
-  index.nanoassert([128, 160, 192, 224, 256].includes(bits), 'bits must be 128 - 256 bits and multiple of 32 bits');
+  assert([128, 160, 192, 224, 256].includes(bits), 'bits must be 128 - 256 bits and multiple of 32 bits');
 
   return await checksum(crypto.randomFill(new Uint8Array(bits / 8)))
 }
@@ -84,7 +81,7 @@ async function entropy (bits = 256) {
  * @returns {Promise<Uint8Array}   Source entropy including appended checksum
  */
 async function checksum (entropy) {
-  index.nanoassert([16, 20, 24, 28, 32].includes(entropy.byteLength), 'entropy must be 16 - 32 bytes');
+  assert([16, 20, 24, 28, 32].includes(entropy.byteLength), 'entropy must be 16 - 32 bytes');
   const bits = entropy.byteLength * 8;
   const checksumBits = bits / 32;
   const random = new Uint8Array(Math.ceil((bits + checksumBits) / 8));

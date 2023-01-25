@@ -1,15 +1,11 @@
 'use strict';
 
-Object.defineProperty(exports, '__esModule', { value: true });
-
-var index = require('./index-36930ebb.js');
-var seed = require('./seed.js');
-var slip0010 = require('./slip-0010.js');
-var keypair = require('./keypair.js');
-var buf = require('./buf.js');
-var crate = require('./crate.js');
-require('./crypto.js');
-require('crypto');
+var assert = require('nanoassert');
+var seed = require('./bip-0039/seed.cjs');
+var slip0010 = require('./slip-0010.cjs');
+var keypair = require('./keypair.cjs');
+var buf = require('./buf.cjs');
+var crate = require('./crate.cjs');
 
 // Private accessors
 const kChainCode = Symbol('ChainCode');
@@ -89,7 +85,7 @@ class HDWallet {
    * @return {Promise<HDWallet>}
    */
   static async fromMnemonic (mnemonic, password, curve = CURVE_ED25519) {
-    index.nanoassert(curve === CURVE_ED25519, 'Only Ed25519 is supported for now');
+    assert(curve === CURVE_ED25519, 'Only Ed25519 is supported for now');
 
     const seed = await this.deriveSeed(mnemonic, password);
 
@@ -106,8 +102,8 @@ class HDWallet {
    * @returns {Promise<Uint8Array>}
    */
   static async deriveSeed (mnemonic, password = '') {
-    index.nanoassert(mnemonic instanceof Uint8Array || typeof mnemonic === 'string');
-    index.nanoassert(password instanceof Uint8Array || typeof password === 'string');
+    assert(mnemonic instanceof Uint8Array || typeof mnemonic === 'string');
+    assert(password instanceof Uint8Array || typeof password === 'string');
 
     return seed.seed(mnemonic, password)
   }
@@ -121,8 +117,8 @@ class HDWallet {
    * @return {Promise<HDWallet>}
    */
   static async fromSeed (seed, curve = CURVE_ED25519) {
-    index.nanoassert(seed instanceof Uint8Array);
-    index.nanoassert(curve === CURVE_ED25519, 'Only Ed25519 is supported for now');
+    assert(seed instanceof Uint8Array);
+    assert(curve === CURVE_ED25519, 'Only Ed25519 is supported for now');
 
     const { secretKey, chainCode } = await slip0010.master(seed, curve);
 

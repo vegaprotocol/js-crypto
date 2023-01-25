@@ -22,6 +22,9 @@ export default [
     ]
   },
   {
+    external: [
+      /node_modules/
+    ],
     input: [
       'lib/crate.js',
       'lib/bip-0039/mnemonic.js',
@@ -40,12 +43,15 @@ export default [
     output: [
       {
         dir: 'cjs',
-        format: 'cjs'
+        format: 'cjs',
+        preserveModules: true,
+        preserveModulesRoot: 'lib',
+        entryFileNames: '[name].cjs'
       }
     ],
     plugins: [
-      commonjs(),
-      nodeResolve()
+      nodeResolve(),
+      commonjs()
     ]
   }
 ]

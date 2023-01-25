@@ -1,11 +1,8 @@
 'use strict';
 
-Object.defineProperty(exports, '__esModule', { value: true });
-
-var index = require('./index-36930ebb.js');
-var crypto = require('./crypto.js');
-var buf = require('./buf.js');
-require('crypto');
+var assert = require('nanoassert');
+var crypto = require('./crypto.cjs');
+var buf = require('./buf.cjs');
 
 /**
  * SLIP-0010 Ed25519 key derivation
@@ -28,8 +25,8 @@ const HARDENED_OFFSET = 0x8000_0000;
  * @return {Promise<{ secretKey: Uint8Array, chainCode: Uint8Array }>}
  */
 async function master (seed, curve) {
-  index.nanoassert(curve === CURVE_ED25519, 'Only Ed25519 is supported for now');
-  index.nanoassert(seed instanceof Uint8Array || typeof seed === 'string');
+  assert(curve === CURVE_ED25519, 'Only Ed25519 is supported for now');
+  assert(seed instanceof Uint8Array || typeof seed === 'string');
 
   const key = buf.string(curve);
   const data = buf.string(seed);
@@ -51,17 +48,17 @@ async function master (seed, curve) {
  * @param  {number} index
  * @return {Promise<{ secretKey: Uint8Array, chainCode: Uint8Array }>}
  */
-async function child (parentSecretKey, parentChainCode, index$1) {
-  index.nanoassert(parentSecretKey instanceof Uint8Array);
-  index.nanoassert(parentSecretKey.byteLength === 32);
-  index.nanoassert(parentChainCode instanceof Uint8Array);
-  index.nanoassert(parentChainCode.byteLength === 32);
-  index.nanoassert(index$1 >= 0);
-  index.nanoassert(index$1 >= HARDENED_OFFSET, 'Ed25519 only supports hardened derivation');
-  index.nanoassert(index$1 < 2 ** 32);
+async function child (parentSecretKey, parentChainCode, index) {
+  assert(parentSecretKey instanceof Uint8Array);
+  assert(parentSecretKey.byteLength === 32);
+  assert(parentChainCode instanceof Uint8Array);
+  assert(parentChainCode.byteLength === 32);
+  assert(index >= 0);
+  assert(index >= HARDENED_OFFSET, 'Ed25519 only supports hardened derivation');
+  assert(index < 2 ** 32);
 
   const key = parentChainCode;
-  const data = buf.concat(buf.u8(0x00), parentSecretKey, buf.u32be(index$1));
+  const data = buf.concat(buf.u8(0x00), parentSecretKey, buf.u32be(index));
   const I = await crypto.hmacSha512(key, data);
 
   return {

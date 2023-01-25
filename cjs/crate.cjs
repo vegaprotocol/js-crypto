@@ -1,3 +1,5 @@
+'use strict';
+
 let wasm$1;
 
 let cachedUint8Memory0 = new Uint8Array();
@@ -223,7 +225,7 @@ async function init(input) {
     return finalizeInit(instance, module);
 }
 
-var exports = /*#__PURE__*/Object.freeze({
+var exports$1 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     default: init,
     ed25519_keypair_from_seed: ed25519_keypair_from_seed,
@@ -265,10 +267,10 @@ const base64codes = [62,0,0,0,63,52,53,54,55,56,57,58,59,60,61,0,0,0,0,0,0,0,0,1
 
         var crate = async () => {
                 await init(wasm_code);
-                return exports;
+                return exports$1;
             };
 
 // Start loading the wasm right away and "memoize" promise
 const wasm = crate();
 
-export { wasm };
+exports.wasm = wasm;

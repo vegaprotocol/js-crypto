@@ -1,6 +1,6 @@
 'use strict';
 
-var sha3r24 = require('./sha3r24.js');
+var sha3r24 = require('./pow/sha3r24.cjs');
 
 const hash = sha3r24.hash;
 const name = sha3r24.name;
@@ -47,16 +47,7 @@ function clzBE (bytes) {
   return zeros
 }
 
-var pow = /*#__PURE__*/Object.freeze({
-  __proto__: null,
-  hash: hash,
-  name: name,
-  solve: solve,
-  verify: verify
-});
-
 exports.hash = hash;
 exports.name = name;
-exports.pow = pow;
 exports.solve = solve;
 exports.verify = verify;
