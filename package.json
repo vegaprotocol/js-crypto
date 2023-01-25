@@ -14,9 +14,18 @@
     "./lib/crypto.js": "./lib/browser-crypto.js"
   },
   "exports": {
-    ".": "./lib/vega-wallet.js",
-    "./*": "./lib/*.js",
-    "./*.js": "./lib/*.js"
+    ".": {
+      "import": "./lib/vega-wallet.js",
+      "require": "./cjs/vega-wallet.js"
+    },
+    "./*": {
+      "import": "./lib/*.js",
+      "require": "./cjs/*.js"
+    },
+    "./*.js": {
+      "import": "./lib/*.js",
+      "require": "./cjs/*.js"
+    }
   },
   "repository": {
     "type": "git",
