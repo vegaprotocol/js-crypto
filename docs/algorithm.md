@@ -54,8 +54,8 @@ fun HDWallet (Mnemonic) -> Derive
 EdDSA with Ed25519 and SHA-512 over a SHA-3/256 digest.
 
 ```
-fun Sign (Message, PrivateKey) -> Signature
-  Digest = SHA3-256(Message)
+fun Sign (Message, PrivateKey, ChainID) -> Signature
+  Digest = SHA3-256(ChainID || 0x00 || Message)
 
   Curve = Ed25519
   H = SHA-512
@@ -65,8 +65,8 @@ fun Sign (Message, PrivateKey) -> Signature
 
   Signature = EdDSA-Sign(Curve, H, Key, Data, Nonce)
 
-fun Verify (Signature, Message, PublicKey) -> {T, F}
-  Digest = SHA3-256(Message)
+fun Verify (Signature, Message, PublicKey, ChainID) -> {T, F}
+  Digest = SHA3-256(ChainID  || 0x00 || Message)
 
   Curve = Ed25519
   H = SHA-512
