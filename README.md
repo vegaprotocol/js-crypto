@@ -61,13 +61,13 @@ methods will be exposed to derive newer versions.
 
 Generate a new key pair at `index`, under the Vega specific subtree.
 
-### `const sig = await kp.sign(msg)`
+### `const sig = await kp.sign(msg, [chainId])`
 
-Sign `msg` with key pair `kp`.
+Sign `msg` with key pair `kp` for optional `chainId`.
 
-### `const isValid = await kp.verify(sig, msg)`
+### `const isValid = await kp.verify(sig, msg, [chainId])`
 
-Verify `sig` is valid for `msg` under key pair `kp`.
+Verify `sig` is valid for `msg` under key pair `kp` for optional `chainId`.
 
 ## Spec
 
