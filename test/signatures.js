@@ -1,5 +1,5 @@
-import { VegaWallet, HARDENED } from '@vegaprotocol/crypto/vega-wallet'
-import { string, toHex } from '@vegaprotocol/crypto/buf'
+import { VegaWallet, HARDENED } from '../lib/vega-wallet.js'
+import { string, toHex } from '../lib/buf.js'
 import test from 'tape'
 
 test('Vectors', async (assert) => {

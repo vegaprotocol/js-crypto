@@ -1,6 +1,6 @@
 import test from 'tape'
-import * as slip0010 from '@vegaprotocol/crypto/slip-0010.js'
-import { toHex as hex } from '@vegaprotocol/crypto/buf.js'
+import * as slip0010 from '../lib/slip-0010.js'
+import { toHex as hex } from '../lib/buf.js'
 
 test('Test vector 1 for ed25519', async function (assert) {
   const seed = new Uint8Array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15])
