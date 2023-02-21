@@ -24,5 +24,7 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
+      - run: sudo apt-get install xvfb
+
       - name: Test
-        run: npm test
+        run: xvfb-run --auto-servernum npm test
