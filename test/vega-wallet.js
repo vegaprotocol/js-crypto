@@ -1,4 +1,4 @@
-import { VegaWallet, HARDENED } from '@vegaprotocol/crypto/vega-wallet'
+import { VegaWallet, HARDENED } from '../lib/vega-wallet.js'
 import test from 'tape'
 
 test('Can recreate wallet from seed', async assert => {

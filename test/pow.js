@@ -1,6 +1,6 @@
 import test from 'tape'
-import * as pow from '@vegaprotocol/crypto/pow.js'
-import { toHex } from '@vegaprotocol/crypto/buf.js'
+import * as pow from '../lib/pow.js'
+import { toHex } from '../lib/buf.js'
 
 test('Identity', async (assert) => {
   const blockHash = '2FB2146FC01F21D358323174BAA230E7DE61C0F150B7FBC415C896B0C23E50FF'

@@ -1,6 +1,6 @@
 import test from 'tape'
-import * as bip0039 from '@vegaprotocol/crypto/bip-0039/seed.js'
-import { toHex as hex } from '@vegaprotocol/crypto/buf.js'
+import * as bip0039 from '../lib/bip-0039/seed.js'
+import { toHex as hex } from '../lib/buf.js'
 
 const vectors = [
   [
