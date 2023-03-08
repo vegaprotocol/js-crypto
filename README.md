@@ -51,15 +51,15 @@ Note that the mnemonic is not validated before key derivation.
 
 Derive a new SLIP-10 `VegaWallet` from a `seed`.
 
-### `const { name, version } = wallet.algorithm`
-
-This contains `name` and `version` detailing the version used by the
-instantiated wallet. Note if this changes in the future other "builder"
-methods will be exposed to derive newer versions.
-
 ### `const kp = await wallet.keyPair(index)`
 
 Generate a new key pair at `index`, under the Vega specific subtree.
+
+### `const { name, version } = kp.algorithm`
+
+This contains `name` and `version` detailing the version used by the
+instantiated keyPair. Note if this changes in the future other "builder"
+methods will be exposed to derive newer versions.
 
 ### `const sig = await kp.sign(msg, [chainId])`
 
