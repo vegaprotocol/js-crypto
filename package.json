@@ -9,7 +9,7 @@
     "watch": "rollup -c -w",
     "lint": "standard lib",
     "test": "tape 'test/**/*.js'",
-    "posttest": "browserify -t [ babelify --presets [ @babel/preset-env ] ] test/*.js | tape-run"
+    "posttest": "browserify -t [ babelify --presets --global ] test/*.js | tape-run"
   },
   "browser": {
     "./lib/crypto.js": "./lib/browser-crypto.js"
