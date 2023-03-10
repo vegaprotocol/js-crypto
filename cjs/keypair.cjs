@@ -4,6 +4,18 @@ var assert = require('nanoassert');
 var crate = require('./crate.cjs');
 var buf = require('./buf.cjs');
 
+const VEGA_ALGORITHM_NAME = 'vega/ed25519';
+const VEGA_ALGORITHM_VERSION = 1;
+
+const CHAIN_ID_DELIMITER = buf.string('\0');
+
+async function _hash (message, chainId) {
+  if (chainId != null) message = buf.concat(buf.string(chainId), CHAIN_ID_DELIMITER, message);
+  const digest = (await crate.wasm).sha3_256_hash(message);
+
+  return digest
+}
+
 class PublicKey {
   /**
    * @param {Uint8Array} pk - 32-byte secret key
@@ -21,14 +33,36 @@ class PublicKey {
    * over the SHA3-256 digest of message
    * @param  {Uint8Array} signature
    * @param  {Uint8Array} message
+   * @param  {string | Uint8Array} [chainId]
    * @return {Promise<boolean>}
    */
-  async verify (signature, message) {
+  async verify (signature, message, chainId) {
     assert(signature instanceof Uint8Array);
     assert(signature.byteLength === 64);
     assert(message instanceof Uint8Array);
-    const digest = (await crate.wasm).sha3_256_hash(message);
-    return (await crate.wasm).ed25519_verify(signature, digest, this._pk)
+
+    const digest = await this.hash(message, chainId);
+    return this.verifyRaw(signature, digest)
+  }
+
+  /**
+   * Verify a direct EdDSA signature
+   *
+   * @param {Uint8Array} bytes
+   * @returns
+   */
+  async verifyRaw (signature, bytes) {
+    return (await crate.wasm).ed25519_verify(signature, bytes, this._pk)
+  }
+
+  /**
+   * Compute the SHA3-256 digest of message, optionally prepending chainId and the delimiter
+   * @param {Uint8Array} message
+   * @param {string|Uint8Array} [chainId]
+   * @returns
+   */
+  async hash (message, chainId) {
+    return _hash(message, chainId)
   }
 
   /**
@@ -61,14 +95,37 @@ class SecretKey {
 
   /**
    * Create a Vega EdDSA signature on message. Vega EdDSA is a EdDSA signature
-   * over the SHA3-256 digest of message
+   * over the SHA3-256 digest of message, optionally prepending chainId and the delimiter
    * @param  {Uint8Array} message
+   * @param  {string | Uint8Array} [chainId]
    * @return {Promise<Uint8Array>}
    */
-  async sign (message) {
+  async sign (message, chainId) {
     assert(message instanceof Uint8Array);
-    const digest = (await crate.wasm).sha3_256_hash(message);
-    return (await crate.wasm).ed25519_sign(digest, this._sk)
+
+    const digest = await this.hash(message, chainId);
+
+    return this.signRaw(digest)
+  }
+
+  /**
+   * Create a direct EdDSA signature
+   *
+   * @param {Uint8Array} bytes
+   * @returns
+   */
+  async signRaw (bytes) {
+    return (await crate.wasm).ed25519_sign(bytes, this._sk)
+  }
+
+  /**
+   * Compute the SHA3-256 digest of message, optionally prepending chainId and the delimiter
+   * @param {Uint8Array} message
+   * @param {string|Uint8Array} [chainId]
+   * @returns
+   */
+  async hash (message, chainId) {
+    return _hash(message, chainId)
   }
 
   /**
@@ -89,12 +146,17 @@ SecretKey.BYTES = 64;
 
 class KeyPair {
   constructor (index, secretKey, publicKey) {
+    this.algorithm = {
+      name: VEGA_ALGORITHM_NAME,
+      version: VEGA_ALGORITHM_VERSION
+    };
+
     this.index = index;
-    /** @private */
-    this.pk = new PublicKey(publicKey);
+
+    this.publicKey = new PublicKey(publicKey);
 
     /** @private */
-    this.sk = new SecretKey(secretKey);
+    this.secretKey = new SecretKey(secretKey);
   }
 
   /**
@@ -103,10 +165,15 @@ class KeyPair {
    * @async
    * @param  {Uint8Array} signature
    * @param  {Uint8Array} message
+   * @param  {string | Uint8Array} [chainId]
    * @return {Promise<boolean>}
    */
-  verify (signature, message) {
-    return this.pk.verify(signature, message)
+  verify (signature, message, chainId) {
+    return this.publicKey.verify(signature, message, chainId)
+  }
+
+  verifyRaw (signature, message) {
+    return this.publicKey.verifyRaw(signature, message)
   }
 
   /**
@@ -114,10 +181,25 @@ class KeyPair {
    * over the SHA3-256 digest of message
    * @async
    * @param  {Uint8Array} message
+   * @param  {string | Uint8Array} [chainId]
    * @return {Promise<Uint8Array>}
    */
-  sign (message) {
-    return this.sk.sign(message)
+  sign (message, chainId) {
+    return this.secretKey.sign(message, chainId)
+  }
+
+  signRaw (message) {
+    return this.secretKey.signRaw(message)
+  }
+
+  /**
+   * Compute the SHA3-256 digest of message, optionally prepending chainId and the delimiter
+   * @param {Uint8Array} message
+   * @param {string|Uint8Array} [chainId]
+   * @returns
+   */
+  hash (message, chainId) {
+    return _hash(message, chainId)
   }
 
   static async fromSeed (index, seed) {
@@ -125,8 +207,17 @@ class KeyPair {
 
     return new this(index, sk, sk.subarray(32))
   }
+
+  toJSON () {
+    return {
+      index: this.index,
+      publicKey: this.publicKey.toJSON()
+    }
+  }
 }
 
 exports.KeyPair = KeyPair;
 exports.PublicKey = PublicKey;
 exports.SecretKey = SecretKey;
+exports.VEGA_ALGORITHM_NAME = VEGA_ALGORITHM_NAME;
+exports.VEGA_ALGORITHM_VERSION = VEGA_ALGORITHM_VERSION;

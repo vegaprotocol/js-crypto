@@ -4,9 +4,6 @@ var hdWallet = require('./hd-wallet.cjs');
 var pow = require('./pow.cjs');
 var keypair = require('./keypair.cjs');
 
-const VEGA_ALGORITHM_NAME = 'vega/ed25519';
-const VEGA_ALGORITHM_VERSION = 1;
-
 const SLIP44_VEGA_COINTYPE = 1789;
 const VEGA_DEFAULT_KEYSPACE = 0;
 
@@ -16,15 +13,6 @@ const VEGA_DEFAULT_PATH = [
 ];
 
 class VegaWallet extends hdWallet.HDWallet {
-  constructor(...args) {
-    super(...args);
-
-    this.algorithm = {
-      name: VEGA_ALGORITHM_NAME,
-      version: VEGA_ALGORITHM_VERSION
-    };
-  }
-
   /**
    * @async
    * @param {Uint8Array} seed
@@ -44,10 +32,10 @@ class VegaWallet extends hdWallet.HDWallet {
 
 exports.HARDENED = hdWallet.HARDENED;
 exports.PoW = pow;
+exports.DEFAULT_VEGA_ALGORITHM_NAME = keypair.VEGA_ALGORITHM_NAME;
+exports.DEFAULT_VEGA_ALGORITHM_VERSION = keypair.VEGA_ALGORITHM_VERSION;
 exports.PublicKey = keypair.PublicKey;
 exports.SLIP44_VEGA_COINTYPE = SLIP44_VEGA_COINTYPE;
-exports.VEGA_ALGORITHM_NAME = VEGA_ALGORITHM_NAME;
-exports.VEGA_ALGORITHM_VERSION = VEGA_ALGORITHM_VERSION;
 exports.VEGA_DEFAULT_KEYSPACE = VEGA_DEFAULT_KEYSPACE;
 exports.VEGA_DEFAULT_PATH = VEGA_DEFAULT_PATH;
 exports.VegaWallet = VegaWallet;

@@ -6,13 +6,15 @@ var assert = require('nanoassert');
 
 const name = 'sha3_24_rounds';
 
+const U64_MAX = 2n ** 64n - 1n;
+
 /**
  * @param {number} difficulty
  * @param {string} blockHash
  * @param {string} tid
  * @param {bigint} [startNonce=0n]
  */
-async function solve (difficulty, blockHash, tid, startNonce = 0n) {
+async function solve (difficulty, blockHash, tid, startNonce = 0n, endNonce = U64_MAX) {
   const crate$1 = await crate.wasm;
 
   assert(difficulty <= 50 && difficulty > 0);
@@ -22,6 +24,7 @@ async function solve (difficulty, blockHash, tid, startNonce = 0n) {
   assert(tid.length === 64, 'tid must be 64 hex chars');
   assert(typeof startNonce === 'bigint', 'startNonce must be bigint');
   assert(startNonce >= 0, 'startNonce must be positive');
+  assert(startNonce <= U64_MAX, 'startNonce must be U64');
 
   return crate$1.sha3r24_pow_solve(difficulty, buf.string(blockHash), buf.string(tid), startNonce)
 }

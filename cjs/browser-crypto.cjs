@@ -2,7 +2,7 @@
 
 var assert = require('nanoassert');
 
-const crypto = window.crypto;
+const crypto = globalThis.crypto;
 const subtle = crypto.subtle;
 
 /**
@@ -40,14 +40,14 @@ async function pbkdf2Sha512 (password, salt, iterations, bytes) {
   const key = await subtle.deriveKey(
     {
       name: 'PBKDF2',
-      salt: salt,
+      salt,
       iterations,
       hash: 'SHA-512'
     },
     _password,
     { name: 'HMAC', hash: 'SHA-512', length: bytes * 8 },
     true,
-    []
+    ['sign', 'verify']
   );
 
   return new Uint8Array(await subtle.exportKey('raw', key))

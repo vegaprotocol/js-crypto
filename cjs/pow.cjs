@@ -10,10 +10,11 @@ const name = sha3r24.name;
  * @param {string} blockHash
  * @param {string} tid
  * @param {bigint} [startNonce=0n]
+ * @param {bigint} [endNonce=U64_MAX]
  */
-async function solve (difficulty, blockHash, tid, startNonce = 0n) {
+async function solve (difficulty, blockHash, tid, startNonce = undefined, endNonce = undefined) {
   return {
-    nonce: await sha3r24.solve(difficulty, blockHash, tid, startNonce),
+    nonce: await sha3r24.solve(difficulty, blockHash, tid, startNonce, endNonce),
     tid,
     hashFunction: sha3r24.name
   }
