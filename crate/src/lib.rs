@@ -52,10 +52,14 @@ pub fn sha3r24_pow_hash(block_hash: &[u8], tid: &[u8], nonce: u64) -> Box<[u8]> 
 }
 
 #[wasm_bindgen]
-pub fn sha3r24_pow_solve(difficulty: u32, block_hash: &[u8], tid: &[u8], start_nonce: u64) -> u64 {
+pub fn sha3r24_pow_solve(difficulty: u32, block_hash: &[u8], tid: &[u8], start_nonce: u64, end_nonce: u64) -> Option<u64> {
     let mut nonce: u64 = start_nonce;
 
     loop {
+        if nonce >= end_nonce {
+            return None;
+        }
+
         let digest = sha3r24_pow_hash(block_hash, tid, nonce);
 
         let x = u64::from_be_bytes([
@@ -63,7 +67,7 @@ pub fn sha3r24_pow_solve(difficulty: u32, block_hash: &[u8], tid: &[u8], start_n
         ]);
 
         if x.leading_zeros() >= difficulty {
-            return nonce;
+            return Some(nonce);
         }
 
         nonce += 1;
