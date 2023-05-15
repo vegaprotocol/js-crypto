@@ -1,7 +1,7 @@
-'use strict';
+'use strict'
 
-var assert = require('nanoassert');
-var crypto = require('../crypto.cjs');
+const assert = require('nanoassert')
+const crypto = require('../crypto.cjs')
 
 // Inlined implementation of BIP0039 for supply-chain security
 // Please be very careful when editing the algorithms below
@@ -20,10 +20,10 @@ function bits11At (bytes, idx) {
   // I know this implementation is fairly naive. It's treating the byte array as a bitfield
   // and extracting one bit at a time. For now this simple solution is good enough, but we
   // can improve it to read chunks of bits at a time
-  let bits11 = 0;
+  let bits11 = 0
 
   for (let offset = 11 * idx, end = offset + 11; offset < end; ++offset) {
-    bits11 = (bits11 << 1) | !!(bytes[offset >> 3] & (128 >> (offset % 8)));
+    bits11 = (bits11 << 1) | !!(bytes[offset >> 3] & (128 >> (offset % 8)))
   }
 
   return bits11
@@ -37,7 +37,7 @@ function bits11At (bytes, idx) {
  *                                 Valid values include 128, 160, 190, 224, 256
  * @returns {Promise<string[]>}    List of mnemonic words. Normally joined into a single string delimited by spaces
  */
-async function generate(bits) {
+async function generate (bits) {
   return toMnemonic(await entropy(bits))
 }
 
@@ -49,11 +49,11 @@ async function generate(bits) {
  * @returns {Promise<string[]>}    List of mnemonic words. Normally joined into a single string delimited by spaces
  */
 async function toMnemonic (entropy) {
-  assert([12, 15, 18, 21, 24].includes(entropy.byteLength * 8 / 11 | 0), 'entropy must be 128 - 256 bits and multiple of 32 bits and include a checksum');
+  assert([12, 15, 18, 21, 24].includes(entropy.byteLength * 8 / 11 | 0), 'entropy must be 128 - 256 bits and multiple of 32 bits and include a checksum')
 
-  const mnemonic = new Array(entropy.byteLength * 8 / 11 | 0);
+  const mnemonic = new Array(entropy.byteLength * 8 / 11 | 0)
 
-  for (let i = 0; i < mnemonic.length; i++) mnemonic[i] = wordlist[bits11At(entropy, i)];
+  for (let i = 0; i < mnemonic.length; i++) mnemonic[i] = wordlist[bits11At(entropy, i)]
 
   return mnemonic
 }
@@ -67,7 +67,7 @@ async function toMnemonic (entropy) {
  * @returns {Promise<Uint8Array>}           Entropy including checksum
  */
 async function entropy (bits = 256) {
-  assert([128, 160, 192, 224, 256].includes(bits), 'bits must be 128 - 256 bits and multiple of 32 bits');
+  assert([128, 160, 192, 224, 256].includes(bits), 'bits must be 128 - 256 bits and multiple of 32 bits')
 
   return await checksum(crypto.randomFill(new Uint8Array(bits / 8)))
 }
@@ -81,15 +81,15 @@ async function entropy (bits = 256) {
  * @returns {Promise<Uint8Array}   Source entropy including appended checksum
  */
 async function checksum (entropy) {
-  assert([16, 20, 24, 28, 32].includes(entropy.byteLength), 'entropy must be 16 - 32 bytes');
-  const bits = entropy.byteLength * 8;
-  const checksumBits = bits / 32;
-  const random = new Uint8Array(Math.ceil((bits + checksumBits) / 8));
-  random.set(entropy);
+  assert([16, 20, 24, 28, 32].includes(entropy.byteLength), 'entropy must be 16 - 32 bytes')
+  const bits = entropy.byteLength * 8
+  const checksumBits = bits / 32
+  const random = new Uint8Array(Math.ceil((bits + checksumBits) / 8))
+  random.set(entropy)
 
-  const checksumHash = await crypto.sha256(random.subarray(0, bits / 8));
-  const checksum = checksumHash[0] & (0xff << (8 - checksumBits));
-  random[bits / 8] |= checksum;
+  const checksumHash = await crypto.sha256(random.subarray(0, bits / 8))
+  const checksum = checksumHash[0] & (0xff << (8 - checksumBits))
+  random[bits / 8] |= checksum
 
   return random
 }
@@ -2145,10 +2145,10 @@ youth
 zebra
 zero
 zone
-zoo`.split('\n');
+zoo`.split('\n')
 
-exports.checksum = checksum;
-exports.entropy = entropy;
-exports.generate = generate;
-exports.toMnemonic = toMnemonic;
-exports.wordlist = wordlist;
+exports.checksum = checksum
+exports.entropy = entropy
+exports.generate = generate
+exports.toMnemonic = toMnemonic
+exports.wordlist = wordlist

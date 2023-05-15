@@ -1,6 +1,6 @@
-'use strict';
+'use strict'
 
-const enc = new TextEncoder();
+const enc = new TextEncoder()
 
 /**
  * Convert a string to Uint8Array
@@ -29,8 +29,8 @@ function u8 (uint) {
  */
 function u32be (uint) {
   if (uint instanceof Uint8Array) return uint
-  const ta = new Uint8Array(4);
-  new DataView(ta.buffer).setUint32(0, uint, false);
+  const ta = new Uint8Array(4)
+  new DataView(ta.buffer).setUint32(0, uint, false)
   return ta
 }
 
@@ -41,13 +41,13 @@ function u32be (uint) {
  */
 function concat (...uints) {
   if (uints.length === 1) return uints[0]
-  const totalLength = uints.reduce((s, a) => s + a.byteLength, 0);
-  const con = new Uint8Array(totalLength);
+  const totalLength = uints.reduce((s, a) => s + a.byteLength, 0)
+  const con = new Uint8Array(totalLength)
 
-  let i = 0;
+  let i = 0
   for (const chunk of uints) {
-    con.set(chunk, i);
-    i += chunk.byteLength;
+    con.set(chunk, i)
+    i += chunk.byteLength
   }
 
   return con
@@ -62,8 +62,8 @@ function toHex (buf) {
   return Array.from(buf, b => b.toString(16).padStart(2, '0')).join('')
 }
 
-exports.concat = concat;
-exports.string = string;
-exports.toHex = toHex;
-exports.u32be = u32be;
-exports.u8 = u8;
+exports.concat = concat
+exports.string = string
+exports.toHex = toHex
+exports.u32be = u32be
+exports.u8 = u8

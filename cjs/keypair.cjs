@@ -1,17 +1,17 @@
-'use strict';
+'use strict'
 
-var assert = require('nanoassert');
-var crate = require('./crate.cjs');
-var buf = require('./buf.cjs');
+const assert = require('nanoassert')
+const crate = require('./crate.cjs')
+const buf = require('./buf.cjs')
 
-const VEGA_ALGORITHM_NAME = 'vega/ed25519';
-const VEGA_ALGORITHM_VERSION = 1;
+const VEGA_ALGORITHM_NAME = 'vega/ed25519'
+const VEGA_ALGORITHM_VERSION = 1
 
-const CHAIN_ID_DELIMITER = buf.string('\0');
+const CHAIN_ID_DELIMITER = buf.string('\0')
 
 async function _hash (message, chainId) {
-  if (chainId != null) message = buf.concat(buf.string(chainId), CHAIN_ID_DELIMITER, message);
-  const digest = (await crate.wasm).sha3_256_hash(message);
+  if (chainId != null) message = buf.concat(buf.string(chainId), CHAIN_ID_DELIMITER, message)
+  const digest = (await crate.wasm).sha3_256_hash(message)
 
   return digest
 }
@@ -21,11 +21,11 @@ class PublicKey {
    * @param {Uint8Array} pk - 32-byte secret key
    */
   constructor (pk) {
-    assert(pk instanceof Uint8Array);
-    assert(pk.byteLength === 32);
+    assert(pk instanceof Uint8Array)
+    assert(pk.byteLength === 32)
 
     /** @private */
-    this._pk = pk;
+    this._pk = pk
   }
 
   /**
@@ -37,11 +37,11 @@ class PublicKey {
    * @return {Promise<boolean>}
    */
   async verify (signature, message, chainId) {
-    assert(signature instanceof Uint8Array);
-    assert(signature.byteLength === 64);
-    assert(message instanceof Uint8Array);
+    assert(signature instanceof Uint8Array)
+    assert(signature.byteLength === 64)
+    assert(message instanceof Uint8Array)
 
-    const digest = await this.hash(message, chainId);
+    const digest = await this.hash(message, chainId)
     return this.verifyRaw(signature, digest)
   }
 
@@ -79,18 +79,18 @@ class PublicKey {
 }
 
 /** @type {number} Byte length of a public key */
-PublicKey.BYTES = 32;
+PublicKey.BYTES = 32
 
 class SecretKey {
   /**
    * @param {Uint8Array} sk - 64-byte secret key
    */
   constructor (sk) {
-    assert(sk instanceof Uint8Array);
-    assert(sk.byteLength === 64);
+    assert(sk instanceof Uint8Array)
+    assert(sk.byteLength === 64)
 
     /** @private */
-    this._sk = sk;
+    this._sk = sk
   }
 
   /**
@@ -101,9 +101,9 @@ class SecretKey {
    * @return {Promise<Uint8Array>}
    */
   async sign (message, chainId) {
-    assert(message instanceof Uint8Array);
+    assert(message instanceof Uint8Array)
 
-    const digest = await this.hash(message, chainId);
+    const digest = await this.hash(message, chainId)
 
     return this.signRaw(digest)
   }
@@ -142,21 +142,21 @@ class SecretKey {
 }
 
 /** @type {number} Byte length of a secret key */
-SecretKey.BYTES = 64;
+SecretKey.BYTES = 64
 
 class KeyPair {
   constructor (index, secretKey, publicKey) {
     this.algorithm = {
       name: VEGA_ALGORITHM_NAME,
       version: VEGA_ALGORITHM_VERSION
-    };
+    }
 
-    this.index = index;
+    this.index = index
 
-    this.publicKey = new PublicKey(publicKey);
+    this.publicKey = new PublicKey(publicKey)
 
     /** @private */
-    this.secretKey = new SecretKey(secretKey);
+    this.secretKey = new SecretKey(secretKey)
   }
 
   /**
@@ -203,7 +203,7 @@ class KeyPair {
   }
 
   static async fromSeed (index, seed) {
-    const sk = (await crate.wasm).ed25519_keypair_from_seed(seed);
+    const sk = (await crate.wasm).ed25519_keypair_from_seed(seed)
 
     return new this(index, sk, sk.subarray(32))
   }
@@ -216,8 +216,8 @@ class KeyPair {
   }
 }
 
-exports.KeyPair = KeyPair;
-exports.PublicKey = PublicKey;
-exports.SecretKey = SecretKey;
-exports.VEGA_ALGORITHM_NAME = VEGA_ALGORITHM_NAME;
-exports.VEGA_ALGORITHM_VERSION = VEGA_ALGORITHM_VERSION;
+exports.KeyPair = KeyPair
+exports.PublicKey = PublicKey
+exports.SecretKey = SecretKey
+exports.VEGA_ALGORITHM_NAME = VEGA_ALGORITHM_NAME
+exports.VEGA_ALGORITHM_VERSION = VEGA_ALGORITHM_VERSION

@@ -1,9 +1,9 @@
-'use strict';
+'use strict'
 
-var sha3r24 = require('./pow/sha3r24.cjs');
+const sha3r24 = require('./pow/sha3r24.cjs')
 
-const hash = sha3r24.hash;
-const name = sha3r24.name;
+const hash = sha3r24.hash
+const name = sha3r24.name
 
 /**
  * @param {number} difficulty
@@ -27,7 +27,7 @@ async function solve (difficulty, blockHash, tid, startNonce = undefined, endNon
  * @param {bigint} nonce
  */
 async function verify (difficulty, blockHash, tid, nonce) {
-  const solution = await sha3r24.hash(blockHash, tid, nonce);
+  const solution = await sha3r24.hash(blockHash, tid, nonce)
 
   return clzBE(solution) >= difficulty
 }
@@ -36,11 +36,11 @@ async function verify (difficulty, blockHash, tid, nonce) {
  * @param {Uint8Array} bytes
  */
 function clzBE (bytes) {
-  let zeros = 0;
+  let zeros = 0
   for (const byte of bytes) {
-    if (byte === 0) zeros += 8;
+    if (byte === 0) zeros += 8
     else {
-      zeros += Math.clz32(byte) - 24;
+      zeros += Math.clz32(byte) - 24
       break
     }
   }
@@ -48,7 +48,7 @@ function clzBE (bytes) {
   return zeros
 }
 
-exports.hash = hash;
-exports.name = name;
-exports.solve = solve;
-exports.verify = verify;
+exports.hash = hash
+exports.name = name
+exports.solve = solve
+exports.verify = verify

@@ -2,7 +2,7 @@ import { test } from 'brittle'
 import * as slip0010 from '../lib/slip-0010.js'
 import { toHex as hex } from '../lib/buf.js'
 
-test('Test vector 1 for ed25519', async function(assert) {
+test('Test vector 1 for ed25519', async function (assert) {
   const seed = new Uint8Array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15])
   const master = await slip0010.master(seed, slip0010.CURVE_ED25519)
 
@@ -30,7 +30,7 @@ test('Test vector 1 for ed25519', async function(assert) {
   assert.is(hex(m0h1h2h2h1000000000h.secretKey), '8f94d394a8e8fd6b1bc2f3f49f5c47e385281d5c17e65324b0f62483e37e8793')
 })
 
-test('Test vector 2 for ed25519', async function(assert) {
+test('Test vector 2 for ed25519', async function (assert) {
   const seed = new Uint8Array([
     255, 252, 249, 246, 243, 240, 237, 234, 231, 228,
     225, 222, 219, 216, 213, 210, 207, 204, 201, 198,
@@ -66,7 +66,7 @@ test('Test vector 2 for ed25519', async function(assert) {
   assert.is(hex(m0h2147483647h1h2147483646h2h.secretKey), '551d333177df541ad876a60ea71f00447931c0a9da16f227c11ea080d7391b8d')
 })
 
-test('Vega Test Vector', async function(assert) {
+test('Vega Test Vector', async function (assert) {
   const seed = new Uint8Array([
     140, 23, 113, 200, 214, 237, 150, 38, 30, 90, 116,
     86, 67, 138, 209, 234, 39, 182, 61, 163, 89, 188,

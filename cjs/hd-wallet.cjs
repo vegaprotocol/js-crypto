@@ -1,28 +1,28 @@
-'use strict';
+'use strict'
 
-var assert = require('nanoassert');
-var seed = require('./bip-0039/seed.cjs');
-var slip0010 = require('./slip-0010.cjs');
-var keypair = require('./keypair.cjs');
-var buf = require('./buf.cjs');
-var crate = require('./crate.cjs');
+const assert = require('nanoassert')
+const seed = require('./bip-0039/seed.cjs')
+const slip0010 = require('./slip-0010.cjs')
+const keypair = require('./keypair.cjs')
+const buf = require('./buf.cjs')
+const crate = require('./crate.cjs')
 
 // Private accessors
-const kChainCode = Symbol('ChainCode');
-const kSecretKey = Symbol('SecretKey');
+const kChainCode = Symbol('ChainCode')
+const kSecretKey = Symbol('SecretKey')
 
 /**
  * SLIP-0010 Ed25519 key derivation
  * @type {string}
  */
-const CURVE_ED25519 = slip0010.CURVE_ED25519;
+const CURVE_ED25519 = slip0010.CURVE_ED25519
 
 /**
  * Hardended child node offset. Use with `.child(index + HARDENED)` or
  * `.keyPair(index + HARDENED)`
  * @type {number}
  */
-const HARDENED = slip0010.HARDENED_OFFSET;
+const HARDENED = slip0010.HARDENED_OFFSET
 
 class HDWallet {
   /**
@@ -35,9 +35,9 @@ class HDWallet {
    */
   constructor (secretKey, chainCode) {
     /** @private */
-    this[kChainCode] = chainCode;
+    this[kChainCode] = chainCode
     /** @private */
-    this[kSecretKey] = secretKey;
+    this[kSecretKey] = secretKey
   }
 
   /**
@@ -58,7 +58,7 @@ class HDWallet {
    * @return {Promise<HDWallet>}
    */
   async child (index) {
-    const { secretKey, chainCode } = await slip0010.child(this[kSecretKey], this[kChainCode], index);
+    const { secretKey, chainCode } = await slip0010.child(this[kSecretKey], this[kChainCode], index)
 
     return new this.constructor(secretKey, chainCode)
   }
@@ -69,7 +69,7 @@ class HDWallet {
    * @return {Promise<KeyPair>}
    */
   async keyPair (index) {
-    const { secretKey } = await slip0010.child(this[kSecretKey], this[kChainCode], index);
+    const { secretKey } = await slip0010.child(this[kSecretKey], this[kChainCode], index)
 
     return await keypair.KeyPair.fromSeed(index, secretKey)
   }
@@ -85,9 +85,9 @@ class HDWallet {
    * @return {Promise<HDWallet>}
    */
   static async fromMnemonic (mnemonic, password, curve = CURVE_ED25519) {
-    assert(curve === CURVE_ED25519, 'Only Ed25519 is supported for now');
+    assert(curve === CURVE_ED25519, 'Only Ed25519 is supported for now')
 
-    const seed = await this.deriveSeed(mnemonic, password);
+    const seed = await this.deriveSeed(mnemonic, password)
 
     return this.fromSeed(seed, curve)
   }
@@ -102,8 +102,8 @@ class HDWallet {
    * @returns {Promise<Uint8Array>}
    */
   static async deriveSeed (mnemonic, password = '') {
-    assert(mnemonic instanceof Uint8Array || typeof mnemonic === 'string');
-    assert(password instanceof Uint8Array || typeof password === 'string');
+    assert(mnemonic instanceof Uint8Array || typeof mnemonic === 'string')
+    assert(password instanceof Uint8Array || typeof password === 'string')
 
     return seed.seed(mnemonic, password)
   }
@@ -117,15 +117,15 @@ class HDWallet {
    * @return {Promise<HDWallet>}
    */
   static async fromSeed (seed, curve = CURVE_ED25519) {
-    assert(seed instanceof Uint8Array);
-    assert(curve === CURVE_ED25519, 'Only Ed25519 is supported for now');
+    assert(seed instanceof Uint8Array)
+    assert(curve === CURVE_ED25519, 'Only Ed25519 is supported for now')
 
-    const { secretKey, chainCode } = await slip0010.master(seed, curve);
+    const { secretKey, chainCode } = await slip0010.master(seed, curve)
 
     return new this(secretKey, chainCode)
   }
 }
 
-exports.CURVE_ED25519 = CURVE_ED25519;
-exports.HARDENED = HARDENED;
-exports.HDWallet = HDWallet;
+exports.CURVE_ED25519 = CURVE_ED25519
+exports.HARDENED = HARDENED
+exports.HDWallet = HDWallet
