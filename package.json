@@ -8,8 +8,8 @@
     "bundle": "rollup -c",
     "watch": "rollup -c -w",
     "lint": "standard lib",
-    "test": "tape 'test/**/*.js'",
-    "posttest": "browserify -t [ babelify --global ] test/*.js | tape-run"
+    "test": "brittle 'test/**/*.js'",
+    "skip:posttest": "browserify -t [ babelify --global ] test/*.js | tape-run"
   },
   "browser": {
     "./lib/crypto.js": "./lib/browser-crypto.js"
@@ -44,14 +44,15 @@
     "@rollup/plugin-node-resolve": "^15.0.1",
     "@wasm-tool/rollup-plugin-rust": "^2.3.3",
     "babelify": "^10.0.0",
+    "brittle": "^3.2.1",
     "browserify": "^17.0.0",
     "rollup": "^3.10.1",
     "standard": "^17.0.0",
-    "tape": "^5.6.3",
     "tape-run": "^10.0.0",
     "typescript": "^4.9.4"
   },
   "dependencies": {
+    "compare": "^2.0.0",
     "nanoassert": "^2.0.0"
   }
 }

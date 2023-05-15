@@ -1,4 +1,4 @@
-import test from 'tape'
+import { test } from 'brittle'
 import * as bip0039 from '../lib/bip-0039/seed.js'
 import { toHex as hex } from '../lib/buf.js'
 
@@ -101,20 +101,16 @@ const vectors = [
   ]
 ]
 
-test('Test Vectors', async function (assert) {
+test('Test Vectors', async function(assert) {
   for (const [mnemonic, expected] of vectors) {
     const actual = hex(await bip0039.seed(mnemonic, 'TREZOR'))
-    assert.equal(actual, expected)
+    assert.is(actual, expected)
   }
-
-  assert.end()
 })
 
-test('Vega Test Vector', async function (assert) {
+test('Vega Test Vector', async function(assert) {
   const mnemonic = 'swing ceiling chaos green put insane ripple desk match tip melt usual shrug turkey renew icon parade veteran lens govern path rough page render'
   const expected = '8c1771c8d6ed96261e5a7456438ad1ea27b63da359bc4922d4aeb44e39e2778d322f18c7f802a0801505ba954d4aa9574a7e686848a26f7e09aaa40ebdd9a730'
   const actual = hex(await bip0039.seed(mnemonic))
-  assert.equal(actual, expected)
-
-  assert.end()
+  assert.is(actual, expected)
 })
