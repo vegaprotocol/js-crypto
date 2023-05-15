@@ -1,3 +1,4 @@
+use argon2::Argon2;
 pub use ed25519_compact::*;
 use tiny_keccak::{Hasher, Sha3};
 use wasm_bindgen::prelude::*;
@@ -52,7 +53,13 @@ pub fn sha3r24_pow_hash(block_hash: &[u8], tid: &[u8], nonce: u64) -> Box<[u8]> 
 }
 
 #[wasm_bindgen]
-pub fn sha3r24_pow_solve(difficulty: u32, block_hash: &[u8], tid: &[u8], start_nonce: u64, end_nonce: u64) -> Option<u64> {
+pub fn sha3r24_pow_solve(
+    difficulty: u32,
+    block_hash: &[u8],
+    tid: &[u8],
+    start_nonce: u64,
+    end_nonce: u64,
+) -> Option<u64> {
     let mut nonce: u64 = start_nonce;
 
     loop {
@@ -82,4 +89,20 @@ pub fn sha3_256_hash(message: &[u8]) -> Box<[u8]> {
     sha3.finalize(&mut digest);
 
     return Box::new(digest);
+}
+
+#[wasm_bindgen]
+pub fn argon2id_kdf(passphrase: &[u8], salt: &[u8], iterations: u32, mem: u32) -> Box<[u8]> {
+    let argon2 = Argon2::new(
+        argon2::Algorithm::Argon2id,
+        argon2::Version::V0x13,
+        argon2::Params::new(mem, iterations, 1, None).unwrap(),
+    );
+    let mut output = [0u8; 32];
+
+    argon2
+        .hash_password_into(passphrase, salt, &mut output)
+        .unwrap();
+
+    return Box::new(output);
 }
