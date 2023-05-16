@@ -33,6 +33,7 @@ export default [
       'lib/buf.js',
       'lib/crate.js',
       'lib/crypto.js',
+      'lib/encryption.js',
       'lib/hd-wallet.js',
       'lib/keypair.js',
       'lib/pow/sha3r24.js',
