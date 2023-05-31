@@ -62,6 +62,19 @@ function toHex (buf) {
   return Array.from(buf, b => b.toString(16).padStart(2, '0')).join('')
 }
 
+/**
+ * Decode hex string to Uint8Array
+ * @param  {string} str
+ * @return {Uint8Array}
+ */
+function hex (str) {
+  const buf = new Uint8Array(str.length / 2)
+  for (let i = 0; i < str.length; i += 2) {
+    buf[i / 2] = parseInt(str.slice(i, i + 2), 16)
+  }
+  return buf
+}
+
 const dec = new TextDecoder()
 
 /**
@@ -85,7 +98,7 @@ function getBase64Code (charCode) {
  * @param  {string} str
  * @return {Uint8Array}
  */
-function fromBase64 (str) {
+function base64 (str) {
   const missingOctets = str.endsWith('==') ? 2 : str.endsWith('=') ? 1 : 0
   const n = str.length
   const result = new Uint8Array(3 * (n / 4))
@@ -110,7 +123,7 @@ function fromBase64 (str) {
  * @param  {Uint8Array} buf
  * @return {string}
  */
-function base64 (buf) {
+function toBase64 (buf) {
   let result = ''; let i; const l = buf.length
   for (i = 2; i < l; i += 3) {
     result += asciiLookup[buf[i - 2] >> 2]
@@ -134,8 +147,9 @@ function base64 (buf) {
 
 exports.base64 = base64
 exports.concat = concat
-exports.fromBase64 = fromBase64
+exports.hex = hex
 exports.string = string
+exports.toBase64 = toBase64
 exports.toHex = toHex
 exports.toString = toString
 exports.u32be = u32be
