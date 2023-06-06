@@ -47,7 +47,7 @@ async function encrypt (passpharse, plaintext, kdfParams = {}) {
   assert(plaintext instanceof Uint8Array)
 
   kdfParams.iterations ??= 5
-  kdfParams.memory ??= 256000
+  kdfParams.memory ??= 64000
 
   assert(kdfParams.iterations > 0)
   assert(kdfParams.memory > 0)
