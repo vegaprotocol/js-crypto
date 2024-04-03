@@ -1,46 +1,63 @@
-'use strict'
+'use strict';
 
-const assert = require('nanoassert')
-const crypto = require('../crypto.cjs')
+var assert = require('nanoassert');
+var crypto = require('../crypto.cjs');
+
+const VALID_ENTROPY_BITS = [128, 160, 192, 224, 256];
+const VALID_WORD_COUNTS = [12, 15, 18, 21, 24];
 
 // Inlined implementation of BIP0039 for supply-chain security
 // Please be very careful when editing the algorithms below
 
+/**
+* Validate a mnemonic phrase, including checksum
+* @async
+* @param {string|string[]} phrase
+* @returns {Promise<boolean>}
+* @throws {Error} If the phrase is not a valid number of words
+* @throws {Error} If the phrase contains an unknown word
+* @throws {Error} If the phrase checksum is invalid
+*/
 async function validate (phrase) {
   if (typeof phrase === 'string') return validate(normalize(phrase))
-  assert(Array.isArray(phrase), 'phrase must be a string or array of words')
+  assert(Array.isArray(phrase), 'Phrase must be a string or array of words');
 
-  if ([12, 15, 18, 21, 24].includes(phrase.length) === false) throw new Error('phrase must be 12, 15, 18, 21 or 24 words')
+  if (VALID_WORD_COUNTS.includes(phrase.length) === false) throw new Error('Phrase must be 12, 15, 18, 21 or 24 words')
 
-  const phraseBytes = new Uint8Array(Math.ceil(phrase.length * 11 / 8))
+  const phraseBytes = new Uint8Array(Math.ceil(phrase.length * 11 / 8));
   for (let i = 0; i < phrase.length; i++) {
-    const idx = wordlist.indexOf(phrase[i])
+    const idx = wordlist.indexOf(phrase[i]);
 
-    if (idx === -1) throw new Error(`word "${phrase[i]}" is not in the wordlist`)
+    if (idx === -1) throw new Error(`Word "${phrase[i]}" is not in the wordlist`)
 
-    bits11Set(phraseBytes, i, idx)
+    bits11Set(phraseBytes, i, idx);
   }
 
-  const checksumBits = phrase.length / 3
+  const checksumBits = phrase.length / 3;
   // The entropy is always an even number of bytes so the checksum will just be
   // a few spare bits in the last byte. Hence we can always slice off the checksum byte
-  const entropy = phraseBytes.slice(0, phraseBytes.byteLength - 1)
+  const entropy = phraseBytes.slice(0, phraseBytes.byteLength - 1);
 
-  const checksumHash = await crypto.sha256(entropy)
-  const checksum = checksumHash[0] & (0xff << (8 - checksumBits))
+  const checksumHash = await crypto.sha256(entropy);
+  const checksum = checksumHash[0] & (0xff << (8 - checksumBits));
 
-  if (checksum !== phraseBytes[phraseBytes.byteLength - 1]) throw new Error('checksum mismatch, phrase corrupted. The last word is a checksum')
+  if (checksum !== phraseBytes[phraseBytes.byteLength - 1]) throw new Error('Checksum mismatch, phrase corrupted. The last word is a checksum')
 
   return true
 }
 
+/**
+* Normalize a phrase into an array of words
+* @param {string} phrase
+* @returns {string[]}
+*/
 function normalize (phrase) {
-  return phrase.toLowerCase().split(/\s+/)
+  return phrase.split(/\s+/)
 }
 
 function bits11Set (bytes, idx, bits11) {
   for (let offset = 11 * idx, end = offset + 11; offset < end; ++offset) {
-    bytes[offset >> 3] |= (bits11 >> (end - offset - 1) & 1) << (7 - (offset % 8))
+    bytes[offset >> 3] |= (bits11 >> (end - offset - 1) & 1) << (7 - (offset % 8));
   }
 }
 
@@ -48,10 +65,10 @@ function bits11At (bytes, idx) {
   // I know this implementation is fairly naive. It's treating the byte array as a bitfield
   // and extracting one bit at a time. For now this simple solution is good enough, but we
   // can improve it to read chunks of bits at a time
-  let bits11 = 0
+  let bits11 = 0;
 
   for (let offset = 11 * idx, end = offset + 11; offset < end; ++offset) {
-    bits11 = (bits11 << 1) | !!(bytes[offset >> 3] & (128 >> (offset % 8)))
+    bits11 = (bits11 << 1) | !!(bytes[offset >> 3] & (128 >> (offset % 8)));
   }
 
   return bits11
@@ -77,11 +94,11 @@ async function generate (bits) {
  * @returns {Promise<string[]>}    List of mnemonic words. Normally joined into a single string delimited by spaces
  */
 async function toMnemonic (entropy) {
-  assert([12, 15, 18, 21, 24].includes(entropy.byteLength * 8 / 11 | 0), 'entropy must be 128 - 256 bits and multiple of 32 bits and include a checksum')
+  assert(VALID_WORD_COUNTS.includes(entropy.byteLength * 8 / 11 | 0), 'Entropy must be 128 - 256 bits and multiple of 32 bits and include a checksum');
 
-  const mnemonic = new Array(entropy.byteLength * 8 / 11 | 0)
+  const mnemonic = new Array(entropy.byteLength * 8 / 11 | 0);
 
-  for (let i = 0; i < mnemonic.length; i++) mnemonic[i] = wordlist[bits11At(entropy, i)]
+  for (let i = 0; i < mnemonic.length; i++) mnemonic[i] = wordlist[bits11At(entropy, i)];
 
   return mnemonic
 }
@@ -95,7 +112,7 @@ async function toMnemonic (entropy) {
  * @returns {Promise<Uint8Array>}           Entropy including checksum
  */
 async function entropy (bits = 256) {
-  assert([128, 160, 192, 224, 256].includes(bits), 'bits must be 128 - 256 bits and multiple of 32 bits')
+  assert(VALID_ENTROPY_BITS.includes(bits), 'Bits must be 128 - 256 bits and multiple of 32 bits');
 
   return await checksum(crypto.randomFill(new Uint8Array(bits / 8)))
 }
@@ -106,18 +123,18 @@ async function entropy (bits = 256) {
  *
  * @async
  * @param {Uint8Array} entropy     Source entropy
- * @returns {Promise<Uint8Array}   Source entropy including appended checksum
+ * @returns {Promise<Uint8Array>}   Source entropy including appended checksum
  */
 async function checksum (entropy) {
-  assert([16, 20, 24, 28, 32].includes(entropy.byteLength), 'entropy must be 16 - 32 bytes')
-  const bits = entropy.byteLength * 8
-  const checksumBits = bits / 32
-  const random = new Uint8Array(Math.ceil((bits + checksumBits) / 8))
-  random.set(entropy)
+  assert([16, 20, 24, 28, 32].includes(entropy.byteLength), 'Entropy must be 16 - 32 bytes');
+  const bits = entropy.byteLength * 8;
+  const checksumBits = bits / 32;
+  const random = new Uint8Array(Math.ceil((bits + checksumBits) / 8));
+  random.set(entropy);
 
-  const checksumHash = await crypto.sha256(random.subarray(0, bits / 8))
-  const checksum = checksumHash[0] & (0xff << (8 - checksumBits))
-  random[bits / 8] |= checksum
+  const checksumHash = await crypto.sha256(random.subarray(0, bits / 8));
+  const checksum = checksumHash[0] & (0xff << (8 - checksumBits));
+  random[bits / 8] |= checksum;
 
   return random
 }
@@ -2173,12 +2190,14 @@ youth
 zebra
 zero
 zone
-zoo`.split('\n')
+zoo`.split('\n');
 
-exports.checksum = checksum
-exports.entropy = entropy
-exports.generate = generate
-exports.normalize = normalize
-exports.toMnemonic = toMnemonic
-exports.validate = validate
-exports.wordlist = wordlist
+exports.VALID_ENTROPY_BITS = VALID_ENTROPY_BITS;
+exports.VALID_WORD_COUNTS = VALID_WORD_COUNTS;
+exports.checksum = checksum;
+exports.entropy = entropy;
+exports.generate = generate;
+exports.normalize = normalize;
+exports.toMnemonic = toMnemonic;
+exports.validate = validate;
+exports.wordlist = wordlist;

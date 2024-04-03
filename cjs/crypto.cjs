@@ -1,14 +1,14 @@
-'use strict'
+'use strict';
 
-const assert = require('nanoassert')
-const crypto = require('crypto')
+var assert = require('nanoassert');
+var crypto = require('crypto');
 
 function randomFill (buf) {
   assert(
     buf.byteLength < 2 ** 16,
     'A maximum of 2**16-1 bytes can be fulfilled'
-  )
-  crypto.randomFillSync(buf)
+  );
+  crypto.randomFillSync(buf);
 
   return buf
 }
@@ -22,16 +22,16 @@ function randomFill (buf) {
  * @return {Promise<Uint8Array>}
  */
 function pbkdf2Sha512 (password, salt, iterations, bytes) {
-  assert(password instanceof Uint8Array)
-  assert(salt instanceof Uint8Array)
-  assert(iterations > 0 && iterations <= 2 ** 53)
-  assert(bytes > 0 && bytes <= 64)
+  assert(password instanceof Uint8Array);
+  assert(salt instanceof Uint8Array);
+  assert(iterations > 0 && iterations <= 2 ** 53);
+  assert(bytes > 0 && bytes <= 64);
 
   return new Promise((resolve, reject) => {
     crypto.pbkdf2(password, salt, iterations, bytes, 'sha512', (err, seed) => {
       if (err) return reject(err)
-      resolve(seed)
-    })
+      resolve(seed);
+    });
   })
 }
 
@@ -43,8 +43,8 @@ function pbkdf2Sha512 (password, salt, iterations, bytes) {
  * @return {Promise<Uint8Array>}
  */
 async function hmacSha512 (key, data) {
-  assert(key instanceof Uint8Array)
-  assert(data instanceof Uint8Array)
+  assert(key instanceof Uint8Array);
+  assert(data instanceof Uint8Array);
 
   return crypto.createHmac('sha512', key).update(data).digest()
 }
@@ -67,13 +67,13 @@ async function sha256 (data) {
  * @returns {Promise<Uint8Array>}
  */
 async function aes256gcmEncrypt (key, nonce, data, aad) {
-  assert(data instanceof Uint8Array)
-  assert(key instanceof Uint8Array)
-  assert(nonce instanceof Uint8Array)
-  assert(aad instanceof Uint8Array)
+  assert(data instanceof Uint8Array);
+  assert(key instanceof Uint8Array);
+  assert(nonce instanceof Uint8Array);
+  assert(aad instanceof Uint8Array);
 
-  const cipher = crypto.createCipheriv('aes-256-gcm', key, nonce)
-  cipher.setAAD(aad)
+  const cipher = crypto.createCipheriv('aes-256-gcm', key, nonce);
+  cipher.setAAD(aad);
   return Buffer.concat([cipher.update(data), cipher.final(), cipher.getAuthTag()])
 }
 
@@ -86,24 +86,24 @@ async function aes256gcmEncrypt (key, nonce, data, aad) {
  * @returns {Promise<Uint8Array>}
  */
 async function aes256gcmDecrypt (key, nonce, data, aad) {
-  assert(data instanceof Uint8Array)
-  assert(key instanceof Uint8Array)
-  assert(nonce instanceof Uint8Array)
-  assert(aad instanceof Uint8Array)
+  assert(data instanceof Uint8Array);
+  assert(key instanceof Uint8Array);
+  assert(nonce instanceof Uint8Array);
+  assert(aad instanceof Uint8Array);
 
-  const cipher = crypto.createDecipheriv('aes-256-gcm', key, nonce)
-  const tag = data.subarray(-16)
-  cipher.setAuthTag(tag)
-  cipher.setAAD(aad)
-  const plaintext = cipher.update(data.subarray(0, -16))
-  cipher.final()
+  const cipher = crypto.createDecipheriv('aes-256-gcm', key, nonce);
+  const tag = data.subarray(-16);
+  cipher.setAuthTag(tag);
+  cipher.setAAD(aad);
+  const plaintext = cipher.update(data.subarray(0, -16));
+  cipher.final();
 
   return plaintext
 }
 
-exports.aes256gcmDecrypt = aes256gcmDecrypt
-exports.aes256gcmEncrypt = aes256gcmEncrypt
-exports.hmacSha512 = hmacSha512
-exports.pbkdf2Sha512 = pbkdf2Sha512
-exports.randomFill = randomFill
-exports.sha256 = sha256
+exports.aes256gcmDecrypt = aes256gcmDecrypt;
+exports.aes256gcmEncrypt = aes256gcmEncrypt;
+exports.hmacSha512 = hmacSha512;
+exports.pbkdf2Sha512 = pbkdf2Sha512;
+exports.randomFill = randomFill;
+exports.sha256 = sha256;

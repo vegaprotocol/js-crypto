@@ -17,7 +17,7 @@ pub fn ed25519_keypair_from_seed(seed_bytes: &[u8]) -> Box<[u8]> {
     let seed = Seed::from_slice(seed_bytes).unwrap();
     let kp = KeyPair::from_seed(seed);
 
-    return Box::new(*kp);
+    Box::new(*kp)
 }
 
 #[wasm_bindgen]
@@ -25,7 +25,7 @@ pub fn ed25519_sign(digest: &[u8], secret_key: &[u8]) -> Box<[u8]> {
     let _secret_key = SecretKey::from_slice(secret_key).unwrap();
     let sig = _secret_key.sign(digest, Option::None);
 
-    return Box::new(*sig);
+    Box::new(*sig)
 }
 
 #[wasm_bindgen]
@@ -33,10 +33,10 @@ pub fn ed25519_verify(signature: &[u8], digest: &[u8], public_key: &[u8]) -> boo
     let _public_key = PublicKey::from_slice(public_key).unwrap();
     let _signature = Signature::from_slice(signature).unwrap();
 
-    return match _public_key.verify(digest, &_signature) {
+    match _public_key.verify(digest, &_signature) {
         Ok(()) => true,
         Err(_) => false,
-    };
+    }
 }
 
 #[wasm_bindgen]
@@ -49,7 +49,7 @@ pub fn sha3r24_pow_hash(block_hash: &[u8], tid: &[u8], nonce: u64) -> Box<[u8]> 
     sha3.update(&nonce.to_be_bytes());
     sha3.finalize(&mut digest);
 
-    return Box::new(digest);
+    Box::new(digest)
 }
 
 #[wasm_bindgen]
@@ -88,7 +88,7 @@ pub fn sha3_256_hash(message: &[u8]) -> Box<[u8]> {
     sha3.update(message);
     sha3.finalize(&mut digest);
 
-    return Box::new(digest);
+    Box::new(digest)
 }
 
 #[wasm_bindgen]
@@ -104,5 +104,5 @@ pub fn argon2id_kdf(passphrase: &[u8], salt: &[u8], iterations: u32, mem: u32) -
         .hash_password_into(passphrase, salt, &mut output)
         .unwrap();
 
-    return Box::new(output);
+    Box::new(output)
 }
