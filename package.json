@@ -40,16 +40,16 @@
   "homepage": "https://github.com/vegaprotocol/js-crypto#readme",
   "devDependencies": {
     "@babel/preset-env": "^7.20.2",
-    "@rollup/plugin-commonjs": "^24.0.1",
+    "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-node-resolve": "^15.0.1",
     "@wasm-tool/rollup-plugin-rust": "^2.3.3",
     "babelify": "^10.0.0",
     "brittle": "^3.2.1",
     "browserify": "^17.0.0",
-    "rollup": "^3.10.1",
+    "rollup": "^4.14.0",
     "standard": "^17.0.0",
-    "tape-run": "^10.0.0",
-    "typescript": "^4.9.4"
+    "tape-run": "^11.0.0",
+    "typescript": "^5.4.3"
   },
   "dependencies": {
     "compare": "^2.0.0",
