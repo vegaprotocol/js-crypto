@@ -207,7 +207,8 @@ test('importing', async (assert) => {
 })
 
 test('import error cases', async (assert) => {
-  await assert.exception(bip0039words.validate('abandon abandon ab'), /phrase must be 12, 15, 18, 21 or 24 words/)
-  await assert.exception(bip0039words.validate('scissors invite lock maple supreme raw rapid void congress muscle digital elegant little brisk hair mango kongress clump'), /word "kongress" is not in the wordlist/)
-  await assert.exception(bip0039words.validate('scissors invite lock maple supreme raw rapid void congress muscle digital elegant little brisk hair mango congress mango'), /checksum mismatch, phrase corrupted. The last word is a checksum/)
+  await assert.exception(bip0039words.validate('abandon abandon ab'), /Phrase must be 12, 15, 18, 21 or 24 words/)
+  await assert.exception(bip0039words.validate('scissors invite lock maple supreme raw rapid void congress muscle digital elegant little brisk hair mango kongress clump'), /Word "kongress" is not in the wordlist/)
+  await assert.exception(bip0039words.validate('Scissors invite lock maple supreme raw rapid void congress muscle digital elegant little brisk hair mango congress clump'), /Word "Scissors" is not in the wordlist/)
+  await assert.exception(bip0039words.validate('scissors invite lock maple supreme raw rapid void congress muscle digital elegant little brisk hair mango congress mango'), /Checksum mismatch, phrase corrupted. The last word is a checksum/)
 })
